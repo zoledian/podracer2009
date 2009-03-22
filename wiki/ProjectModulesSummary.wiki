@@ -1,0 +1,31 @@
+= Block =
+A block and its properties
+
+= BlockBuilder =
+Some kind of builder for (several?) blocks.
+
+= LoadLevel =
+  * Loads a textfile describing a level
+  * Stores it in a 2D array
+  * Calls BlockBuilder to create the level
+
+= Ship =
+The ship and its properties
+
+= Input =
+This object will be responsible for handling user input
+
+= SkyBox =
+SkyBox and its properties
+
+= Light = 
+Light and its properties
+
+= Camera =
+Camera and its properties
+
+= GlStates =
+This will be responsible for handling all the different gl states. 
+
+= Collision =
+Responsible for collision detection and handling
