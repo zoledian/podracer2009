@@ -7,13 +7,10 @@ A quick summary for the modules we intend to use in this game.
 == Block ==
 A block and its properties
 
-== BlockBuilder ==
-Some kind of builder for (several?) blocks.
-
 == LoadLevel ==
   * Loads a textfile describing a level
   * Stores it in a 2D array
-  * Calls BlockBuilder to create the level
+  * Creates Blocks to create the level
 
 == Ship ==
 The ship and its properties
