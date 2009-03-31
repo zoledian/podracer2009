@@ -1,13 +1,14 @@
 
 
 /*
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+  #include <stdio.h>
+  #include <math.h>
+  #include <stdlib.h>
 */
 
 #include <iostream>
 #include <math.h>
+#include "glstates.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -18,15 +19,9 @@ using namespace std;
 #endif
 
 /*
-#include "helpers.h"
-#include "shaderutils.h"
+  #include "helpers.h"
+  #include "shaderutils.h"
 */
-
-int init()
-{
-  // Place one-time initialization code here
-  return 1;
-}
 
 void display()
 {
@@ -37,26 +32,6 @@ void display()
   // Clear framebuffer & zbuffer
   glClearColor(0.3, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Setup projection matrix
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(90, 1, 0.01, 100);
-
-  // Setup object matrix
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  // glMultMatrixd(getObjectMatrix());
-
-  // Enable Z-buffering
-  glEnable(GL_DEPTH_TEST);
-
-  // Enable backface culling
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-
-  glPushAttrib(GL_ALL_ATTRIB_BITS);
-  glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 
   // Swap front- and backbuffers
   glutSwapBuffers();
@@ -72,6 +47,7 @@ void idle()
 }
 int main(int argc, char **argv)
 {
+  // Initiate glut
   glutInit(&argc, argv);
 
   // Configure GLUT:
@@ -79,9 +55,9 @@ int main(int argc, char **argv)
   //  - Z-buffer
   //  - two sets of above mentioned buffers, so that
   //    doublebuffering is possible
-  //
-  // Initial window size 800x800
   glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+
+  // Create window
   glutInitWindowSize(800, 800);
   glutCreateWindow("Podracer 2009");
 
@@ -93,14 +69,14 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  // Call various init functions
-  if (!init())
-    return 0;
+  // Create our stateHandler, define a default set of states 
+  // and push them onto the stack
+  GLStates* stateHandler = new GLStates();
 
   // Register our display- and idle-functions with GLUT
   glutDisplayFunc(display);
   glutIdleFunc(idle);
-  // glutSpecialFunc(functionKeys);
+  // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return
   glutMainLoop();
