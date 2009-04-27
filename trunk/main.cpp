@@ -9,6 +9,7 @@
 #include <iostream>
 #include <math.h>
 #include "glstates.h"
+#include "input.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -71,11 +72,14 @@ int main(int argc, char **argv)
 
   // Create our stateHandler, define a default set of states 
   // and push them onto the stack
-  GLStates* stateHandler = new GLStates();
+  GLStates* StateHandler = new GLStates();
+  // Input* input = new Input();
 
   // Register our display- and idle-functions with GLUT
   glutDisplayFunc(display);
   glutIdleFunc(idle);
+  glutKeyboardFunc(Input::normKey);
+  glutSpecialFunc(Input::specKey);
   // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return
