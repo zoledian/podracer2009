@@ -8,8 +8,11 @@
 
 #include <iostream>
 #include <math.h>
-#include "glstates.h"
-#include "input.h"
+
+#include "glstates.cpp"
+#include "input.cpp"
+#include "camera.cpp"
+
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -66,7 +69,8 @@ int main(int argc, char **argv)
   //  new enough OpenGL drivers
   if (!glGetString(GL_SHADING_LANGUAGE_VERSION))
     {
-      fprintf(stderr, "Error: Your OpenGL driver does not support OpenGL 2.0 shaders\n");
+      cout << "Error: Your OpenGL driver does not support OpenGL 2.0 shaders\n";
+      // fprintf(stderr, "Error: Your OpenGL driver does not support OpenGL 2.0 shaders\n");
       return 0;
     }
 

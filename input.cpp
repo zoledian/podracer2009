@@ -1,5 +1,7 @@
 #include "input.h"
+
 #include <iostream>
+#include "stdlib.h"
 #include <GL/glut.h>
 using namespace std;
 
