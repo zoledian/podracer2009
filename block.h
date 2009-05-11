@@ -4,12 +4,16 @@
 #include <GL/glut.h>
 
 class Block {
- public:
-  Block();
-  void setColor(GLfloat, GLfloat, GLfloat);
-
- private: 
-  GLfloat[3] colors;
+public:
+     void setRow(int);
+     void setRowPosition(int);
+     void setColor(GLfloat, GLfloat, GLfloat);
+     void draw();
+     
+private:
+     int row_;
+     int rowPosition_;
+     //GLfloat[3] colors;
 };
 
 #endif
