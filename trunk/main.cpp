@@ -34,7 +34,16 @@ using namespace std;
 GLStates* StateHandler = new GLStates();
 Ship* Spaceship = new Ship();
 Camera* Cam = new Camera();
-// Input* input = new Input();
+//Input* input = new Input();
+
+void inputSpecKey(int key, int mouseX, int mouseY)
+{
+  // if(key == GLUT_KEY_F1) /* do something */
+  if(key == GLUT_KEY_LEFT)
+    Spaceship->moveHere(-1);
+  if(key == GLUT_KEY_RIGHT)
+    Spaceship->moveHere(1);
+}
 
 void display()
 {
@@ -48,7 +57,7 @@ void display()
 
   StateHandler->original();
 
-  Spaceship->moveShip(0.0,0.0,0.0);
+  Spaceship->drawShip();
   Cam->LookAtThis(0.0,0.0,0.0);
 
   // Swap front- and backbuffers
@@ -92,7 +101,7 @@ int main(int argc, char **argv)
   glutDisplayFunc(display);
   glutIdleFunc(idle);
   glutKeyboardFunc(Input::normKey);
-  glutSpecialFunc(Ship::specKey);
+  glutSpecialFunc(inputSpecKey);
   // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return
