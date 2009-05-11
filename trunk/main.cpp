@@ -9,10 +9,11 @@
 #include <iostream>
 #include <math.h>
 
-#include "glstates.cpp"
-#include "input.cpp"
-#include "camera.cpp"
-#include "ship.cpp"
+#include "glstates.h"
+#include "input.h"
+#include "camera.h"
+#include "ship.h"
+#include "block.h"
 
 using namespace std;
 
