@@ -1,4 +1,4 @@
-OBJECTS :=  main.o glstates.o input.o camera.o ship.o block.o
+OBJECTS :=  main.o glstates.o input.o camera.o ship.o block.o loadlevel.o
 CC = g++ -g -Wall -lglut -lGL 
 name = podracer2009
 version = 0.1
@@ -23,6 +23,9 @@ input.o : input.cpp input.h
 
 ship.o : ship.cpp ship.h
 	$(CC)  -c ship.cpp
+
+loadlevel.o : loadlevel.cpp loadlevel.h
+	$(CC)  -c loadlevel.cpp
 
 clean :
 	rm -Rf $(name)-$(version) $(OBJECTS)

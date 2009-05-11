@@ -5,15 +5,19 @@
 
 class Block {
 public:
+     Block();
      void setRow(int);
-     void setRowPosition(int);
+     void setPosition(int);
      void setColor(GLfloat, GLfloat, GLfloat);
      void draw();
      
 private:
      int row_;
-     int rowPosition_;
-     //GLfloat[3] colors;
+     int position_;
+     GLfloat red_;
+     GLfloat green_;
+     GLfloat blue_;
+
 };
 
 #endif
