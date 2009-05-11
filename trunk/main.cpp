@@ -12,6 +12,7 @@
 #include "glstates.cpp"
 #include "input.cpp"
 #include "camera.cpp"
+#include "ship.cpp"
 
 using namespace std;
 
@@ -27,6 +28,14 @@ using namespace std;
   #include "shaderutils.h"
 */
 
+// FIXME global..?
+// Create our stateHandler, define a default set of states 
+// and push them onto the stack
+GLStates* StateHandler = new GLStates();
+Ship* Spaceship = new Ship();
+Camera* Cam = new Camera();
+// Input* input = new Input();
+
 void display()
 {
   // This function is called whenever it is time to render
@@ -36,6 +45,11 @@ void display()
   // Clear framebuffer & zbuffer
   glClearColor(0.3, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  StateHandler->original();
+
+  Spaceship->moveShip(0.0,0.0,0.0);
+  Cam->LookAtThis(0.0,0.0,0.0);
 
   // Swap front- and backbuffers
   glutSwapBuffers();
@@ -74,16 +88,11 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  // Create our stateHandler, define a default set of states 
-  // and push them onto the stack
-  GLStates* StateHandler = new GLStates();
-  // Input* input = new Input();
-
   // Register our display- and idle-functions with GLUT
   glutDisplayFunc(display);
   glutIdleFunc(idle);
   glutKeyboardFunc(Input::normKey);
-  glutSpecialFunc(Input::specKey);
+  glutSpecialFunc(Ship::specKey);
   // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return

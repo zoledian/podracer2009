@@ -5,14 +5,20 @@ using namespace std;
 Camera::Camera()
 {
   LookAtThis(0.0,0.0,0.0);
-
 }
 
 void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 {
+
+  //glPushMatrix();
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(90, 1, 0.01, 100);
+  //glPopMatrix();
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt( x, y+10, z-10,
-	     x, y, z,
-	     0.0, 1.0, 0.0 );
+  gluLookAt(x, 3, 3,
+	    x, y, z-3,
+	    0, 1, 0);
 }
