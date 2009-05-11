@@ -13,8 +13,7 @@
 #include "input.h"
 #include "camera.h"
 #include "ship.h"
-#include "block.h"
-
+#include "loadlevel.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -37,6 +36,9 @@ Ship* Spaceship = new Ship();
 Camera* Cam = new Camera();
 //Input* input = new Input();
 
+// Testlevel
+LoadLevel* loadLevel = new LoadLevel("level.dat");
+
 void inputSpecKey(int key, int mouseX, int mouseY)
 {
   // if(key == GLUT_KEY_F1) /* do something */
@@ -57,6 +59,8 @@ void display()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   StateHandler->original();
+
+  loadLevel->drawLevel();
 
   Spaceship->drawShip();
   Cam->LookAtThis(0.0,0.0,0.0);

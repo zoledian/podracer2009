@@ -3,69 +3,39 @@
 #include <GL/glut.h>
 using namespace std;
 
+Block::Block()
+{
+     row_ = 0;
+     position_ = 0;
+     red_ = 0.3;
+     green_ = 0.3;
+     blue_ = 0.3;
+}
+
 void Block::setRow(int row)
 {
      row_ = row;
 }
 
-void Block::setRowPosition(int rowPosition)
+void Block::setPosition(int position)
 {
-     rowPosition_ = rowPosition;
+     // The first position is -2 because 0 is the position in the middle
+     position_ = position-2;
 }
 
-void Block::setColor(GLfloat, GLfloat, GLfloat)
+void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 {
-
+     red_ = red;
+     green_ = green;
+     blue_ = blue;
 }
 
 void Block::draw()
 {
-     // Draw block
-  glBegin(GL_POLYGON);
-  glColor3f(1, 1, 1);
-  glVertex3f(-0.1, 0.1, 0.2);
-  glVertex3f(0.1, 0.1, 0.2);
-  glVertex3f(0.1, -0.1, 0.2);
-  glVertex3f(-0.1, -0.1, 0.2);
-  glEnd();
-  
-  glBegin(GL_POLYGON);
-  glColor3f(1, 1, 0);
-  glVertex3f(0.1, -0.1, 0.4);
-  glVertex3f(0.1, -0.1, 0.2);
-  glVertex3f(0.1, 0.1, 0.2);
-  glVertex3f(0.1, 0.1, 0.4);
-  glEnd(); 
 
-  glBegin(GL_POLYGON);
-  glColor3f(0, 1, 1);
-  glVertex3f(-0.1, -0.1, 0.4);
-  glVertex3f(0.1, -0.1, 0.4);
-  glVertex3f(0.1, 0.1, 0.4);
-  glVertex3f(-0.1, 0.1, 0.4);
-  glEnd();
-
-  glBegin(GL_POLYGON);
-  glColor3f(0, 1, 0);
-  glVertex3f(-0.1, -0.1, 0.2);
-  glVertex3f(-0.1, -0.1, 0.4);
-  glVertex3f(-0.1, 0.1, 0.4);
-  glVertex3f(-0.1, 0.1, 0.2);
-  glEnd(); 
-
-  glBegin(GL_POLYGON);
-  glColor3f(1, 0, 0);
-  glVertex3f(-0.1, 0.1, 0.2);
-  glVertex3f(-0.1, 0.1, 0.4);
-  glVertex3f(0.1, 0.1, 0.4);
-  glVertex3f(0.1, 0.1, 0.2);
-  glEnd();
-
-  glBegin(GL_POLYGON);
-  glColor3f(0, 0, 1);
-  glVertex3f(0.1, -0.1, 0.2);
-  glVertex3f(0.1, -0.1, 0.4);
-  glVertex3f(-0.1, -0.1, 0.4);
-  glVertex3f(-0.1, -0.1, 0.2);
-  glEnd();
+     glPushMatrix();
+     glColor3f(red_, green_, blue_); 
+     glTranslatef(position_, -1, row_);
+     glutSolidCube(1);
+     glPopMatrix();
 }
