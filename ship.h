@@ -6,11 +6,19 @@
 class Ship {
  public:
   Ship();
-  static void specKey(int key, int mouseX, int mouseY);
-  void moveShip(GLdouble x, GLdouble y, GLdouble z);
+  void drawShip();  
+  void moveHere(GLint cubeNr); // cube nr 1 - 5
 
  private:
-  void drawShip(GLdouble x, GLdouble y, GLdouble z);  
+  void move();
+
+  GLdouble hereIAm[3];
+  GLdouble cubePosition[5];
+  GLint cubeFrom;
+  GLint cubeTo;
+  GLboolean moving;
+  GLboolean jumping;
+  GLint angleZ;
 };
 
 #endif
