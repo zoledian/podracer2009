@@ -37,7 +37,7 @@ Camera* Cam = new Camera();
 //Input* input = new Input();
 
 // Testlevel
-//LoadLevel* loadLevel = new LoadLevel("level.dat");
+LoadLevel* loadLevel = new LoadLevel("level.dat");
 
 void inputSpecKey(int key, int mouseX, int mouseY)
 {
@@ -60,7 +60,7 @@ void display()
 
   StateHandler->original();
 
-  //loadLevel->drawLevel();
+  loadLevel->drawLevel();
 
   Spaceship->drawShip();
   Cam->LookAtThis(0.0,0.0,0.0);
