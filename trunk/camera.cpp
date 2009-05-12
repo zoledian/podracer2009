@@ -18,7 +18,7 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(x, 3, 3,
+  gluLookAt(x, 5, 3,
 	    x, y, z-3,
 	    0, 1, 0);
 }
