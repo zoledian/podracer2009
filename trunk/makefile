@@ -1,10 +1,10 @@
 OBJECTS :=  main.o glstates.o input.o camera.o ship.o block.o loadlevel.o
-CC = g++ -g -Wall -lglut -lGL 
+CC = g++ -g -Wall 
 name = podracer2009
 version = 0.1
 
 podracer2009 : ${OBJECTS}
-	$(CC) -o $(name)-$(version) $(OBJECTS)
+	$(CC) -lglut -lGL -o $(name)-$(version) $(OBJECTS)
 
 main.o : main.cpp
 	$(CC)  -c main.cpp
