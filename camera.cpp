@@ -13,7 +13,7 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
   //glPushMatrix();
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(90, 1, 0.01, 100);
+  gluPerspective(75, 1, 0.01, 100);
   //glPopMatrix();
 
   glMatrixMode(GL_MODELVIEW);
