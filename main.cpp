@@ -14,6 +14,7 @@
 #include "camera.h"
 #include "ship.h"
 #include "loadlevel.h"
+#include "skybox.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -39,6 +40,9 @@ Camera* Cam = new Camera();
 // Testlevel
 LoadLevel* loadLevel = new LoadLevel("level.dat");
 
+// Skybox
+SkyBox* skyBox = new SkyBox();
+
 void inputSpecKey(int key, int mouseX, int mouseY)
 {
   // if(key == GLUT_KEY_F1) /* do something */
@@ -59,6 +63,8 @@ void display()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   StateHandler->original();
+
+  skyBox->drawSkyBox();
 
   loadLevel->drawLevel();
 
