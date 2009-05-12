@@ -11,6 +11,8 @@ class Ship {
 
  private:
   void move();
+  void drawBody();
+  void drawWindshield();
 
   GLdouble hereIAm[3];
   GLdouble cubePosition[5];

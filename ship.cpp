@@ -18,33 +18,17 @@ void Ship::drawShip()
 {
   glMatrixMode(GL_MODELVIEW);
 
-  glPushMatrix();
+  // Translate
+  glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
 
+  // Rotate
   if(moving)
     move();
 
-    glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
+  // Draw
+  drawBody();
+  drawWindshield();
 
-    /* Draw Cuboid "body" */
-    glPushMatrix();
-    glColor3f(1,0,0);
-    glScalef(0.7,0.3,1.0); //Size of cuboid
-    //glTranslatef(0.0,0.3,0.0);
-    glutSolidCube(1);
-    glPopMatrix();
-
-    /* Draw Sphere "windshield" */
-    glPushMatrix();
-    glColor3f(0,1,0);
-    glTranslatef(0.0,0.0,-0.3);
-    glutSolidSphere(0.3, // Radius
-	 	    10,  // slices 
-		    10  // stacks
-		    );
-
-    glPopMatrix();
-
-  glPopMatrix();
 }
 
 void Ship::moveHere(GLint cubeNR)
@@ -71,22 +55,34 @@ void Ship::move()
   distanceLeft = fabs(distanceLeft);
 
   /* Rotate when moving */
-  if ( (distanceLeft > 0.5) && (angleZ < 50) )
+  if ( !movingLeft )
     {
-      angleZ = angleZ + 1;
-      glRotatef(angleZ,
-		hereIAm[0],
-		0.0,
-		1.0);
+      if ( (distanceLeft < 0.5) && (angleZ > 0) )
+	{
+	  // We are moving right and are close to our destination
+	  angleZ = angleZ - 1;
+	}
+      else if (angleZ < 30)
+	{
+	  // We are moving right and are far away from our destination
+	  angleZ = angleZ + 1;
+	}
     }
-  else if ( (distanceLeft < 0.5) && (angleZ > 0) )
+  else if (movingLeft)
     {
-      angleZ = angleZ - 1;
-      glRotatef(angleZ,
-		hereIAm[0],
-		0.0,
-		1.0);
+      if ( (distanceLeft < 0.5) && (angleZ < 0) )
+	{
+	  // We are moving left and are close to our destination
+	  angleZ = angleZ + 1;
+	}
+      else if (angleZ > -30)
+	{
+	  // We are moving left and are far away from our destination
+	  angleZ = angleZ - 1;
+	}
     }
+
+  glRotatef(angleZ, 0.0, 0.0, -10.0);
 
   /* Move by the x axis a bit */
   if(movingLeft)
@@ -104,4 +100,40 @@ void Ship::move()
       angleZ = 0;
       moving = false;
     }
+}
+
+void Ship::drawBody()
+{
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+  // Scale
+  glScalef(0.7,0.3,1.0); //Size of cuboid
+
+  /* Draw Cuboid "body" */
+  glColor3f(1,0,0);
+  glutSolidCube(1);
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+}
+
+void Ship::drawWindshield()
+{
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+
+  /* Draw Sphere "windshield" */
+  glColor3f(0,1,0);
+  glTranslatef(0.0,0.0,-0.3);
+  glutSolidSphere(0.3, // Radius
+		  10,  // slices 
+		  10  // stacks
+		  );
+  
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+
 }
