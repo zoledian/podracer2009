@@ -14,8 +14,7 @@ class Ship {
 
   GLdouble hereIAm[3];
   GLdouble cubePosition[5];
-  GLint cubeFrom;
-  GLint cubeTo;
+  GLint cube;
   GLboolean moving;
   GLboolean jumping;
   GLint angleZ;

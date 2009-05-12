@@ -6,21 +6,11 @@ using namespace std;
 
 Ship::Ship()
 {
-  hereIAm[0] = 0;
-  hereIAm[1] = 0;
-  hereIAm[2] = 0;
-
-  cubePosition[0] = -2;
-  cubePosition[1] = -1;
-  cubePosition[2] = 0;
-  cubePosition[3] = 1;
-  cubePosition[4] = 2;
-
-  cubeFrom = 3; // We start here
-  cubeTo = -1;
+  hereIAm[0] =  hereIAm[1] = hereIAm[2] = 0.0;
   
   moving = jumping = false;
 
+  cube = 0;
   angleZ = 0;
 }
 
@@ -33,23 +23,25 @@ void Ship::drawShip()
   if(moving)
     move();
 
-  glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
+    glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
 
     /* Draw Cuboid "body" */
     glPushMatrix();
     glColor3f(1,0,0);
-    glScalef(0.7,0.3,1); //Size of cuboid
+    glScalef(0.7,0.3,1.0); //Size of cuboid
+    //glTranslatef(0.0,0.3,0.0);
     glutSolidCube(1);
     glPopMatrix();
 
     /* Draw Sphere "windshield" */
     glPushMatrix();
     glColor3f(0,1,0);
-    glTranslatef(0,0,-0.3);
+    glTranslatef(0.0,0.0,-0.3);
     glutSolidSphere(0.3, // Radius
 	 	    10,  // slices 
 		    10  // stacks
 		    );
+
     glPopMatrix();
 
   glPopMatrix();
@@ -57,42 +49,43 @@ void Ship::drawShip()
 
 void Ship::moveHere(GLint cubeNR)
 {
-  cubeTo = cubeFrom+cubeNR;
+  cube = cube+cubeNR;
+  // Convert to array values 0 - 4
   moving = true;
 }
 
 
 void Ship::move()
 {
-  cout << "From: " << hereIAm[0] << " ";
-  cout << "(dest " << cubePosition[cubeTo-1] << ") " << endl;
-
   /* Some calculations */
-  float distanceLeft = hereIAm[0] - cubePosition[cubeTo-1];
-  if (distanceLeft != 0)
-    { distanceLeft = fabs(distanceLeft); }
-  
-  float distanceTotal = cubePosition[cubeFrom-1] - cubePosition[cubeTo-1];
 
+  // Distance we have left
+  float distanceLeft = hereIAm[0] - cube;
+
+  // Are we moving left or right?
   bool movingLeft = true;
-  if (distanceTotal < 0)
+  if (distanceLeft < 0)
     { movingLeft = false; }
 
-  distanceTotal = fabs(distanceTotal);
-
-  cout << hereIAm[0] << " " << cubePosition[cubeTo-1] << endl;
-  cout << "Left " << distanceLeft << " Total " << distanceTotal << endl << endl;
+  // Remove negative distance values
+  distanceLeft = fabs(distanceLeft);
 
   /* Rotate when moving */
-  if ( ((distanceLeft / distanceTotal) < 0.5) && (angleZ < 50))
+  if ( (distanceLeft > 0.5) && (angleZ < 50) )
     {
       angleZ = angleZ + 1;
-      glRotatef(angleZ,0,0,1);
+      glRotatef(angleZ,
+		hereIAm[0],
+		0.0,
+		1.0);
     }
-  else if ( ((distanceLeft / distanceTotal) >= 0.5) && (angleZ > 0))
+  else if ( (distanceLeft < 0.5) && (angleZ > 0) )
     {
       angleZ = angleZ - 1;
-      glRotatef(angleZ,0,0,1);
+      glRotatef(angleZ,
+		hereIAm[0],
+		0.0,
+		1.0);
     }
 
   /* Move by the x axis a bit */
@@ -101,11 +94,14 @@ void Ship::move()
   else
     { hereIAm[0] = hereIAm[0]+0.01; }
 
+  if (distanceLeft < 0.01)
+    distanceLeft = 0.000;
+
   /* Have we arrived? */
-  if (hereIAm[0] == cubePosition[cubeTo-1] || distanceLeft == 0)
+  if (distanceLeft == 0)
     {
-      cubeFrom = cubeTo;
-      cubeTo = -1;
+      hereIAm[0] = cube;
+      angleZ = 0;
       moving = false;
     }
 }
