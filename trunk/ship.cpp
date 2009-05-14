@@ -8,10 +8,10 @@ Ship::Ship()
 {
   hereIAm[0] =  hereIAm[1] = hereIAm[2] = 0.0;
   
-  moving = jumping = false;
+  moving = turning = jumping = false;
 
-  cube = 0;
-  angleZ = 0;
+  cube = 0; // 0 = middle -2 = leftmost 2 = rightmost
+  angleZ = hoverY = 0;
 }
 
 void Ship::drawShip()
@@ -22,8 +22,10 @@ void Ship::drawShip()
   glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
 
   // Rotate
-  if(moving)
-    move();
+  if(turning)
+    turn();
+  else
+    hover();
 
   // Draw
   drawBody();
@@ -33,28 +35,52 @@ void Ship::drawShip()
 
 void Ship::moveHere(GLint cubeNR)
 {
-  cube = cube+cubeNR;
-  // Convert to array values 0 - 4
-  moving = true;
+  // Keep ship from falling down on the sides
+  if (fabs(cube+cubeNR) < 3)
+    {
+      cube = cube+cubeNR;
+      turning = true;
+    }
 }
 
 
-void Ship::move()
+void Ship::turn()
 {
-  /* Some calculations */
-
   // Distance we have left
-  float distanceLeft = hereIAm[0] - cube;
+  GLfloat distanceLeft = hereIAm[0] - cube;
 
   // Are we moving left or right?
-  bool movingLeft = true;
+  GLboolean movingLeft = true;
   if (distanceLeft < 0)
     { movingLeft = false; }
 
   // Remove negative distance values
   distanceLeft = fabs(distanceLeft);
 
-  /* Rotate when moving */
+  // Rotate when moving
+  turnRotateZ(movingLeft, distanceLeft);
+
+  // Move by the x axis a bit
+  if(movingLeft)
+    { hereIAm[0] = hereIAm[0]-0.025; }
+  else
+    { hereIAm[0] = hereIAm[0]+0.025; }
+
+  // Make floats behave!
+  if (distanceLeft < 0.01)
+    distanceLeft = 0.000;
+
+  // Have we arrived?
+  if (distanceLeft == 0)
+    {
+      hereIAm[0] = cube;
+      angleZ = 0;
+      turning = false;
+    }
+}
+
+void Ship::turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft)
+{
   if ( !movingLeft )
     {
       if ( (distanceLeft < 0.5) && (angleZ > 0) )
@@ -83,22 +109,23 @@ void Ship::move()
     }
 
   glRotatef(angleZ, 0.0, 0.0, -10.0);
+}
 
-  /* Move by the x axis a bit */
-  if(movingLeft)
-    { hereIAm[0] = hereIAm[0]-0.01; }
-  else
-    { hereIAm[0] = hereIAm[0]+0.01; }
-
-  if (distanceLeft < 0.01)
-    distanceLeft = 0.000;
-
-  /* Have we arrived? */
-  if (distanceLeft == 0)
+void Ship::hover()
+{
+  if (hoverY < 100)
     {
-      hereIAm[0] = cube;
-      angleZ = 0;
-      moving = false;
+      hereIAm[1] = hereIAm[1]+0.0005;
+      hoverY++;
+    }
+  else if ( (hoverY >= 100) && (hoverY < 200) )
+    {
+      hereIAm[1] = hereIAm[1]-0.0005;
+      hoverY++;
+    }
+  else
+    {
+      hoverY = 0;
     }
 }
 
@@ -112,7 +139,11 @@ void Ship::drawBody()
 
   /* Draw Cuboid "body" */
   glColor3f(1,0,0);
-  glutSolidCube(1);
+  //glutSolidCube(1);
+  glutSolidSphere (0.6, // radius
+		   20, // slices
+		   20 // stacks
+		   );
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -126,8 +157,8 @@ void Ship::drawWindshield()
 
   /* Draw Sphere "windshield" */
   glColor3f(0,1,0);
-  glTranslatef(0.0,0.0,-0.3);
-  glutSolidSphere(0.3, // Radius
+  glTranslatef(0.0,0.0,-0.25);
+  glutSolidSphere(0.27, // Radius
 		  10,  // slices 
 		  10  // stacks
 		  );
