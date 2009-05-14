@@ -1,16 +1,7 @@
-
-
-/*
-  #include <stdio.h>
-  #include <math.h>
-  #include <stdlib.h>
-*/
-
 #include <iostream>
 #include <math.h>
+#include "stdlib.h" // needed for 'exit()'
 
-#include "glstates.h"
-#include "input.h"
 #include "camera.h"
 #include "ship.h"
 #include "loadlevel.h"
@@ -24,25 +15,19 @@ using namespace std;
 #error This program needs OpenGL 2.0 libraries to compile
 #endif
 
-/*
-  #include "helpers.h"
-  #include "shaderutils.h"
-*/
 
-// FIXME global..?
-// Create our stateHandler, define a default set of states 
-// and push them onto the stack
-GLStates* StateHandler = new GLStates();
+/*** 
+ *** GLOBAL VARIABLES & OBJECTS 
+ **/
 Ship* Spaceship = new Ship();
 Camera* Cam = new Camera();
-//Input* input = new Input();
+LoadLevel* loadLevel = new LoadLevel("level.dat"); // Testlevel
+SkyBox* skyBox = new SkyBox(); // Skybox
 
-// Testlevel
-LoadLevel* loadLevel = new LoadLevel("level.dat");
 
-// Skybox
-SkyBox* skyBox = new SkyBox();
-
+/*** 
+ *** INPUT FUNCTIONS
+ **/
 void inputSpecKey(int key, int mouseX, int mouseY)
 {
   // if(key == GLUT_KEY_F1) /* do something */
@@ -52,6 +37,17 @@ void inputSpecKey(int key, int mouseX, int mouseY)
     Spaceship->moveHere(1);
 }
 
+void inputNormKey(unsigned char key, int mouseX, int mouseY)
+{
+  // Exit program if 'q' or ESCAPE is pressed.
+  if(key == 'q' || key == 'Q' || key == '\27')
+    exit(0);
+}
+
+
+/*** 
+ *** DISPLAY FUNCTION
+ **/
 void display()
 {
   // This function is called whenever it is time to render
@@ -62,36 +58,39 @@ void display()
   glClearColor(0.3, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  StateHandler->original();
+  // Enable Z-buffering
+  glEnable(GL_DEPTH_TEST);
+
+  // Enable backface culling
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
 
   skyBox->drawSkyBox();
 
   loadLevel->drawLevel();
 
   Spaceship->drawShip();
+  
   Cam->LookAtThis(0.0,0.0,0.0);
 
   // Swap front- and backbuffers
   glutSwapBuffers();
 }
 
+
+/*** 
+ *** TIMER (frame limiter) FUNCTION
+ **/
 void timer(int i)
 {
    glutTimerFunc(10, timer, i);
    glutPostRedisplay();
 } 
 
-void idle()
-{
-  // This function is called whenever the computer is idle
 
-  // As soon as the machine is idle, ask GLUT to trigger rendering of a new
-  // frame
-  //glutTimerFunc(20, timer, 43); 
-  //glutPostRedisplay();
-
-}
-
+/*** 
+ *** MAIN
+ **/
 int main(int argc, char **argv)
 {
   // Initiate glut
@@ -117,13 +116,11 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  // Register our display- and idle-functions with GLUT
+  // Register our functions with GLUT
   glutDisplayFunc(display);
-  //glutIdleFunc(idle);
-  glutKeyboardFunc(Input::normKey);
+  glutKeyboardFunc(inputNormKey);
   glutSpecialFunc(inputSpecKey);
   glutTimerFunc(20, timer, 0);
-  // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return
   glutMainLoop();
