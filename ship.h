@@ -10,7 +10,9 @@ class Ship {
   void moveHere(GLint cubeNr); // cube nr 1 - 5
 
  private:
-  void move();
+  void turn();
+  void turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft);
+  void hover();
   void drawBody();
   void drawWindshield();
 
@@ -19,6 +21,8 @@ class Ship {
   GLint cube;
   GLboolean moving;
   GLboolean jumping;
+  GLboolean turning;
+  GLint hoverY;
   GLint angleZ;
 };
 

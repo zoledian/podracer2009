@@ -75,14 +75,23 @@ void display()
   glutSwapBuffers();
 }
 
+void timer(int i)
+{
+   glutTimerFunc(10, timer, i);
+   glutPostRedisplay();
+} 
+
 void idle()
 {
   // This function is called whenever the computer is idle
 
   // As soon as the machine is idle, ask GLUT to trigger rendering of a new
   // frame
-  glutPostRedisplay();
+  //glutTimerFunc(20, timer, 43); 
+  //glutPostRedisplay();
+
 }
+
 int main(int argc, char **argv)
 {
   // Initiate glut
@@ -110,9 +119,10 @@ int main(int argc, char **argv)
 
   // Register our display- and idle-functions with GLUT
   glutDisplayFunc(display);
-  glutIdleFunc(idle);
+  //glutIdleFunc(idle);
   glutKeyboardFunc(Input::normKey);
   glutSpecialFunc(inputSpecKey);
+  glutTimerFunc(20, timer, 0);
   // FIXME: repost, keyboard, functionkeys, mouse...
 
   // Enter GLUT's main loop; this function will never return
