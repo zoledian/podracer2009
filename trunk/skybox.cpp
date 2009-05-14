@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include "zpr.h"
 #include "skybox.h"
 using namespace std;
 
@@ -21,9 +22,8 @@ void SkyBox::drawSkyBox()
         // Enable Gouraud shading
 	glShadeModel(GL_SMOOTH);
 	
-/*	
-        // Make skybox stick
-	GLdouble *cameraMatrix = getCameraMatrix();
+/*        // Make skybox stick
+	GLdouble *cameraMatrix = zprGetCameraMatrix();
 	GLdouble newMatrix[16];
 	
 	int i = 0;
@@ -42,7 +42,6 @@ void SkyBox::drawSkyBox()
 	
 	glLoadMatrixd(newMatrix);
 */
-
 	// Draw cube
 	//glEnable(GL_TEXTURE_2D);
 
@@ -53,7 +52,7 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, texturePosZ);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,-1);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(-50, 50, -50);
 	glTexCoord2f(1, 0);
 	glVertex3f(50, 50, -50);
@@ -67,13 +66,13 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, texturePosX);
 	glBegin(GL_POLYGON);
 	glNormal3f(1,0,0);
-	glTexCoord2f(1, 1);
+	//glTexCoord2f(1, 1);
 	glVertex3f(50, -50, 50);
-	glTexCoord2f(0, 1);
+	//glTexCoord2f(0, 1);
 	glVertex3f(50, -50, -50);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(50, 50, -50);
-	glTexCoord2f(1, 0);
+	//glTexCoord2f(1, 0);
 	glVertex3f(50, 50, 50);
 	glEnd(); 
 
@@ -81,13 +80,13 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, textureNegZ);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,1);
-	glTexCoord2f(1, 1);
+	//glTexCoord2f(1, 1);
 	glVertex3f(-50, -50, 50);
-	glTexCoord2f(0, 1);
+	//glTexCoord2f(0, 1);
 	glVertex3f(50, -50, 50);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(50, 50, 50);
-	glTexCoord2f(1, 0);
+	//glTexCoord2f(1, 0);
 	glVertex3f(-50, 50, 50);
 	glEnd();
 
@@ -95,13 +94,13 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, textureNegX);
 	glBegin(GL_POLYGON);
 	glNormal3f(-1,0,0);
-	glTexCoord2f(1, 1);
+	//glTexCoord2f(1, 1);
 	glVertex3f(-50, -50, -50);
-	glTexCoord2f(0, 1);
+	//glTexCoord2f(0, 1);
 	glVertex3f(-50, -50, 50);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(-50, 50, 50);
-	glTexCoord2f(1, 0);
+	//glTexCoord2f(1, 0);
 	glVertex3f(-50, 50, -50);
 	glEnd(); 
 
@@ -109,13 +108,13 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, texturePosY);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,1,0);
-	glTexCoord2f(0, 1);
+	//glTexCoord2f(0, 1);
 	glVertex3f(-50, 50, -50);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(-50, 50, 50);
-	glTexCoord2f(1, 0);
+	//glTexCoord2f(1, 0);
 	glVertex3f(50, 50, 50);
-	glTexCoord2f(1, 1);
+	//glTexCoord2f(1, 1);
 	glVertex3f(50, 50, -50);
 	glEnd();
 
@@ -123,13 +122,13 @@ void SkyBox::drawSkyBox()
 	//glBindTexture(GL_TEXTURE_2D, textureNegY);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,-1,0);
-	glTexCoord2f(1, 0);
+	//glTexCoord2f(1, 0);
 	glVertex3f(50, -50, -50);
-	glTexCoord2f(1, 1);
+	//glTexCoord2f(1, 1);
 	glVertex3f(50, -50, 50);
-	glTexCoord2f(0, 1);
+	//glTexCoord2f(0, 1);
 	glVertex3f(-50, -50, 50);
-	glTexCoord2f(0, 0);
+	//glTexCoord2f(0, 0);
 	glVertex3f(-50, -50, -50);
 	glEnd();
 
