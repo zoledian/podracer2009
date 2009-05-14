@@ -1,20 +1,21 @@
 #include <iostream>
 #include "ship.h"
 #include "math.h"
+#include "camera.h"
 #include <GL/glut.h>
 using namespace std;
 
 Ship::Ship()
 {
-  hereIAm[0] =  hereIAm[1] = hereIAm[2] = 0.0;
+  hereIAm[0] =  hereIAm[1] = hereIAm[2] = jumpDestination = jumpHeight = 0.0;
   
   moving = turning = jumping = false;
 
   cube = 0; // 0 = middle -2 = leftmost 2 = rightmost
-  angleZ = hoverY = 0;
+  angleZ = hoverY = angleX = 0;
 }
 
-void Ship::drawShip()
+void Ship::drawShip(Camera* Cam)
 {
   glMatrixMode(GL_MODELVIEW);
 
@@ -27,9 +28,19 @@ void Ship::drawShip()
   else
     hover();
 
+  if(jumping)
+    jump();
+
   // Draw
   drawBody();
   drawWindshield();
+
+  // Point camera on ship
+  Cam->LookAtThis(hereIAm[0],hereIAm[1]+jumpHeight,hereIAm[2]);
+
+  // Move a bit forward the next time
+  if (moving)
+    hereIAm[2] = hereIAm[2] - 0.050;
 
 }
 
@@ -43,6 +54,19 @@ void Ship::moveHere(GLint cubeNR)
     }
 }
 
+void Ship::jumpShip()
+{
+  if (moving == false)
+    {
+      moving = true;
+      return;
+    }
+  else if (jumping == false)
+    {
+      jumpDestination = hereIAm[2] - 4;
+      jumping = true;
+    }
+}
 
 void Ship::turn()
 {
@@ -127,6 +151,61 @@ void Ship::hover()
     {
       hoverY = 0;
     }
+}
+
+void Ship::jump()
+{
+  
+  // Distance we have left
+  GLfloat distanceLeft = hereIAm[2] - jumpDestination;
+  // Remove negative distance values
+  distanceLeft = fabs(distanceLeft);
+  // Make floats behave!
+  if (distanceLeft < 0.01)
+    distanceLeft = 0.000;
+  
+  // Adjust X-axis angle
+  if (distanceLeft > 3 && angleX < 40)
+    {
+      angleX++;
+      angleX++;
+      jumpHeight = jumpHeight + 0.025;
+    }
+  else if (distanceLeft > 2 && distanceLeft < 3 && angleX > 0)
+    {
+      angleX--;
+      angleX--;
+      jumpHeight = jumpHeight + 0.025;
+    }
+  else if (distanceLeft > 0.75 && distanceLeft < 2 && angleX > -40)
+    {
+      angleX--;
+      angleX--;
+      jumpHeight = jumpHeight - 0.025;
+    }
+  else if (distanceLeft > 0 && distanceLeft < 0.75 && angleX < 0)
+    {
+      angleX = angleX + 3;
+      if (angleX > 0)
+	angleX = 0;
+      jumpHeight = jumpHeight - 0.025;
+    }
+  //cout << angleX << endl;
+    
+    // Are we done with our jump?
+    if (distanceLeft == 0.0)
+      {
+	jumping = false;
+	jumpHeight = 0.0;
+	angleX = 0;
+      }
+    
+    // Rotate
+    glRotatef(angleX, 10.0, 0.0, 0.0);
+    
+    // Jump
+    glTranslatef(0.0,jumpHeight,0.0);
+  
 }
 
 void Ship::drawBody()

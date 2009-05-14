@@ -40,8 +40,14 @@ void inputSpecKey(int key, int mouseX, int mouseY)
 void inputNormKey(unsigned char key, int mouseX, int mouseY)
 {
   // Exit program if 'q' or ESCAPE is pressed.
-  if(key == 'q' || key == 'Q' || key == '\27')
-    exit(0);
+  if (key == 'q' || key == 'Q' || key == '\27')
+    {
+      exit(0);
+    }
+  else if (key == '\32' || key == 'm' || key == 'M')
+    {
+      Spaceship->jumpShip();
+    }
 }
 
 
@@ -69,9 +75,9 @@ void display()
 
   loadLevel->drawLevel();
 
-  Spaceship->drawShip();
+  Spaceship->drawShip(Cam);
   
-  Cam->LookAtThis(0.0,0.0,0.0);
+  //Cam->LookAtThis(0.0,0.0,0.0);
 
   // Swap front- and backbuffers
   glutSwapBuffers();
