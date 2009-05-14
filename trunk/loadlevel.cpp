@@ -51,42 +51,12 @@ void LoadLevel::loadNewLevel(string name)
 		is.str(readLine);
 		// Check the read data
 		while(is>>data)
-		{
-			// Create a block that should be drawn
-			if(data == 1)
-			{
-				Block* newBlock = new Block();
-				newBlock->setType(1);
-
-				// Check if this is a jumpblock
-				is>>data;
-				if(data == 1)
-				{
-				     newBlock->setJump(true);
-				}
-				
-				blocks_.push_back(newBlock);
-				newBlock = 0;
-				delete newBlock;
-			}
-			// Create a block that shouldn't be drawn
-			else if(data == 0)
-			{
+		{					        
+		        // Create an information block
+			if(data == 0)
+			{			     
 			     Block* newBlock = new Block();
 			     newBlock->setType(0);
-			     
-                             // The next chunk of data is irrelevant
-			     is>>data;
-
-			     blocks_.push_back(newBlock);
-			     newBlock = 0;
-			     delete newBlock;
-			}
-			// Create an information block
-			else if(data == 2)
-			{
-			     Block* newBlock = new Block();
-			     newBlock->setType(2);
 
 			     // Read the angle that should be used for the row
 			     is>>data;
@@ -98,7 +68,37 @@ void LoadLevel::loadNewLevel(string name)
 
 			     blocks_.push_back(newBlock);
 			     newBlock = 0;
-			     delete newBlock;
+			     delete newBlock; 		
+			}
+			// Create a block that shouldn't be drawn
+			else if(data == 1)
+			{
+			     Block* newBlock = new Block();
+			     newBlock->setType(1);
+			     			     
+			     blocks_.push_back(newBlock);
+			     newBlock = 0;
+			     delete newBlock;		
+			}			
+			// Create a block
+			else if(data == 2)
+			{
+			     Block* newBlock = new Block();
+			     newBlock->setType(2);			     
+			     
+			     blocks_.push_back(newBlock);
+			     newBlock = 0;
+			     delete newBlock;			     
+			}
+			// Create a jump block
+			else if(data == 3)
+			{
+			     Block* newBlock = new Block();
+			     newBlock->setType(3);
+			     			     
+			     blocks_.push_back(newBlock);
+			     newBlock = 0;
+			     delete newBlock;			     
 			}
 			
 		}
@@ -116,11 +116,12 @@ void LoadLevel::drawLevel()
      int angle = 0;
 
      glPushMatrix();
+     glPushAttrib(GL_CURRENT_BIT); // Save color
      
      for(unsigned int i = 0; i < blocks_.size(); i++)
      {
 	  // Check if this is an information block
-	  if(blocks_[i]->getType() == 2)
+	  if(blocks_[i]->getType() == 0)
 	  {	       
 	       // Special case if we're at the beginning
 	       if(i != 0)
@@ -139,7 +140,7 @@ void LoadLevel::drawLevel()
 			 glTranslatef(0,0.5,0.5);
 			 glRotatef(angle,1,0,0);
 			 glTranslatef(0,-0.5,-0.5);
-			 }
+		    }
 		    
 	       }
 	       else
@@ -161,10 +162,10 @@ void LoadLevel::drawLevel()
 	       }
 	       
 	       // Move to next position
-	       glTranslatef(1,0,0);
-	       
+	       glTranslatef(1,0,0);	       
 	  }
      }
      
      glPopMatrix();
+     glPopAttrib(); // Restore color
 }

@@ -24,10 +24,30 @@ void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 
 void Block::draw()
 {
-     if(type_ == 1)
+     if(type_ == 2) // Ordinary block
      {
 	  glColor3f(red_, green_, blue_); 
 	  glutSolidCube(1);
+     }
+     else if(type_ == 3) // Jump block
+     {  
+	  glPushMatrix(); // Save matrix
+	  glPushAttrib(GL_CURRENT_BIT); // Save color
+	  
+	  // Change angle for jump block
+	  glTranslatef(0,0.4,0);
+	  glTranslatef(0,0.1,0.5);
+	  glRotatef(35,1,0,0);
+	  glTranslatef(0,-0.1,-0.5);
+
+	  // Scale the block
+	  glScalef(1,0.2,1.0);
+	  
+	  glColor3f(0.0, 0.2, 0.3); 
+	  glutSolidCube(1);
+	  
+	  glPopMatrix(); // Restore matrix
+	  glPopAttrib(); // Restore color
      }
 }
 
