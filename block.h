@@ -6,18 +6,24 @@
 class Block {
 public:
      Block();
-     void setRow(int);
-     void setPosition(int);
-     void setColor(GLfloat, GLfloat, GLfloat);
      void draw();
-     
+     void setColor(GLfloat, GLfloat, GLfloat);
+     void setType(int);
+     void setAngle(int);
+     void setHeight(int);
+     void setJump(bool);
+     int getType();
+     int getAngle();
+     int getHeight();
+
 private:
-     int row_;
-     int position_;
+     int type_;
+     bool jump_;
      GLfloat red_;
      GLfloat green_;
      GLfloat blue_;
-
+     int angle_;
+     int height_;
 };
 
 #endif

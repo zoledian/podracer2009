@@ -5,23 +5,15 @@ using namespace std;
 
 Block::Block()
 {
-     row_ = 0;
-     position_ = 0;
      red_ = 0.3;
      green_ = 0.3;
      blue_ = 0.3;
+     type_ = 0;
+     jump_ = false;
+     angle_ = 0;
+     height_ = 0;
 }
 
-void Block::setRow(int row)
-{
-     row_ = row;
-}
-
-void Block::setPosition(int position)
-{
-     // The first position is -2 because 0 is the position in the middle
-     position_ = position-2;
-}
 
 void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 {
@@ -32,10 +24,44 @@ void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 
 void Block::draw()
 {
+     if(type_ == 1)
+     {
+	  glColor3f(red_, green_, blue_); 
+	  glutSolidCube(1);
+     }
+}
 
-     glPushMatrix();
-     glColor3f(red_, green_, blue_); 
-     glTranslatef(position_, -1, row_);
-     glutSolidCube(1);
-     glPopMatrix();
+void Block::setType(int type)
+{
+     type_ = type;
+}
+
+int Block::getType()
+{
+     return type_;
+}
+
+void Block::setJump(bool jump)
+{
+     jump_ = jump;
+}
+
+void Block::setAngle(int angle)
+{
+     angle_ = angle;
+}
+
+int Block::getAngle()
+{
+     return angle_;
+}
+
+void Block::setHeight(int height)
+{
+     height_ = height;
+}
+
+int Block::getHeight()
+{
+     return height_;
 }
