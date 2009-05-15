@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 #include "loadlevel.h"
 using namespace std;
 
@@ -34,10 +35,14 @@ void LoadLevel::loadNewLevel(string name)
 
 	const char* fileName = name.c_str();
 	string readLine = "";
-	//int line = 0;
-	//int position = 0;
 	char read[256];
 	int data = 0;
+	double xyz[3];
+	int angle = 0;
+	int height = 0;
+	xyz[0] = -2;
+	xyz[1] = -1;
+	xyz[2] = 1;
 	
 	ifstream fin(fileName);
 
@@ -52,39 +57,37 @@ void LoadLevel::loadNewLevel(string name)
 		// Check the read data
 		while(is>>data)
 		{					        
-		        // Create an information block
+		        // Read an information row
 			if(data == 0)
-			{			     
-			     Block* newBlock = new Block();
-			     newBlock->setType(0);
+			{		     
+			     // Read the angle that should be used for the next row
+			     is>>angle;
 
-			     // Read the angle that should be used for the row
-			     is>>data;
-			     newBlock->setAngle(data);
+			     // Read the height difference that should be used for the next row
+			     is>>height; 
+			     xyz[1] = xyz[1] + height;
 
-			     // Read the height difference that should be used for the row
-			     is>>data;
-			     newBlock->setHeight(data);
-
-			     blocks_.push_back(newBlock);
-			     newBlock = 0;
-			     delete newBlock; 		
+			     // Change y,z
+			      xyz[1] = xyz[1] + sin(angle*(M_PI/180));
+			      xyz[2] = xyz[2] - cos(angle*(M_PI/180));			     
 			}
-			// Create a block that shouldn't be drawn
+			// Nothing should be done
 			else if(data == 1)
 			{
-			     Block* newBlock = new Block();
+			     /* Block* newBlock = new Block();
 			     newBlock->setType(1);
 			     			     
 			     blocks_.push_back(newBlock);
 			     newBlock = 0;
-			     delete newBlock;		
+			     delete newBlock;  */	
 			}			
 			// Create a block
 			else if(data == 2)
 			{
 			     Block* newBlock = new Block();
-			     newBlock->setType(2);			     
+			     newBlock->setType(2);
+			     newBlock->setAngle(angle);
+			     newBlock->setCoord(xyz);
 			     
 			     blocks_.push_back(newBlock);
 			     newBlock = 0;
@@ -95,13 +98,26 @@ void LoadLevel::loadNewLevel(string name)
 			{
 			     Block* newBlock = new Block();
 			     newBlock->setType(3);
+			     newBlock->setAngle(angle+35);
+			     
+			     // Need new coordinates since it changes with the extra rotation
+			     double jumpxyz[3];
+			     jumpxyz[0] = xyz[0];
+			     jumpxyz[1] = xyz[1] + (sin(35*(M_PI/180)) / 2);
+			     jumpxyz[2] = xyz[2] + ((1 - cos(35*(M_PI/180))) / 2);
+
+			     newBlock->setCoord(jumpxyz);
 			     			     
 			     blocks_.push_back(newBlock);
 			     newBlock = 0;
 			     delete newBlock;			     
 			}
 			
+			xyz[0]++;
+			
 		}
+		
+		xyz[0] = -2;
 		
 	}
 
@@ -113,57 +129,12 @@ void LoadLevel::loadNewLevel(string name)
 // Draw the blocks in the level
 void LoadLevel::drawLevel()
 {
-     int angle = 0;
-
      glPushMatrix();
      glPushAttrib(GL_CURRENT_BIT); // Save color
      
      for(unsigned int i = 0; i < blocks_.size(); i++)
      {
-	  // Check if this is an information block
-	  if(blocks_[i]->getType() == 0)
-	  {	       
-	       // Special case if we're at the beginning
-	       if(i != 0)
-	       {
-		    // It is a new row, reset the position
-		    glTranslatef(-5, 0, -1);
-
-		    // Change hight (Y-axis)
-		    glTranslatef(0, blocks_[i]->getHeight(), 0);
-		    
-		    angle = blocks_[i]->getAngle();
-		    
-		    // Apply the new angle
-		    if(angle != 0)
-		    {
-			 glTranslatef(0,0.5,0.5);
-			 glRotatef(angle,1,0,0);
-			 glTranslatef(0,-0.5,-0.5);
-		    }
-		    
-	       }
-	       else
-	       {
-		    // Move to first position and make the Y-axis below the ship
-		    glTranslatef(-2, -1, 0);
-	       }
-	       
-	  }
-	  else
-	  {
-	       if(angle != 0)
-	       {	
-		    blocks_[i]->draw();
-	       }
-	       else
-	       {
-		    blocks_[i]->draw(); 
-	       }
-	       
-	       // Move to next position
-	       glTranslatef(1,0,0);	       
-	  }
+	  blocks_[i]->draw();
      }
      
      glPopMatrix();
