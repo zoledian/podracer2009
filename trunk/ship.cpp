@@ -68,6 +68,11 @@ void Ship::jumpShip()
     }
 }
 
+GLdouble* Ship::getPosition()
+{
+  return hereIAm;
+}
+
 void Ship::turn()
 {
   // Distance we have left
