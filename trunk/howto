@@ -1,0 +1,19 @@
+/* HOW TO CREATE A LEVEL */
+
+A level has the syntax
+
+0 0 0
+1 1 1 1 1
+0 30 -2
+2 2 3 2 2
+
+EVERY SECOND ROW ("0 0 0" in the example) is an information row.
+This row gives the loader information about the coming row of blocks.
+The first 0 is just to tell the loader that is is reading an information row.
+The second number is the angle in degrees.
+The third number is hight adjustment.
+
+Any other rows tells the loader what kind of blocks it should create.
+1 = No block at all.
+2 = Ordinary block.
+3 = Jump block.

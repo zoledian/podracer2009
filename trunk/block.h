@@ -10,20 +10,18 @@ public:
      void setColor(GLfloat, GLfloat, GLfloat);
      void setType(int);
      void setAngle(int);
-     void setHeight(int);
-     void setJump(bool);
+     void setCoord(double*);
      int getType();
      int getAngle();
-     int getHeight();
+     double* getCoord();
 
 private:
-     int type_;
-     bool jump_;
      GLfloat red_;
      GLfloat green_;
      GLfloat blue_;
+     int type_;
      int angle_;
-     int height_;
+     double coord_[3];
 };
 
 #endif
