@@ -10,6 +10,7 @@ class Ship {
   void drawShip(Camera* cam);
   void moveHere(GLint cubeNr); // cube nr 1 - 5
   void jumpShip();
+  GLdouble* getPosition();
 
  private:
   void turn();
