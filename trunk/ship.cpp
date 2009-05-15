@@ -6,13 +6,24 @@
 using namespace std;
 
 Ship::Ship()
-{
-  hereIAm[0] =  hereIAm[1] = hereIAm[2] = jumpDestination = jumpHeight = 0.0;
-  
-  moving = turning = jumping = false;
+{ 
+  /**
+   ** "Physics" variables
+   */
+  jumpLength = 6.0; // How far to jump
+  hoverHeight = 0.0025; // How wide to hover
+  velocity = 0.050; // Speed of ship
+  turnSpeed = 0.025; // Speed of switching to next cube
 
-  cube = 0; // 0 = middle -2 = leftmost 2 = rightmost
-  angleZ = hoverY = angleX = 0;
+  /**
+   ** Helper variables
+   **/
+  hereIAm[0] =  hereIAm[1] = hereIAm[2] = jumpDestination = jumpHeight = 0.0;
+  moving = turning = jumping = false;
+  cube = 0;
+  turnAngle = hoverY = angleX = hoverCounter = 0;
+
+
 }
 
 void Ship::drawShip(Camera* Cam)
@@ -20,7 +31,7 @@ void Ship::drawShip(Camera* Cam)
   glMatrixMode(GL_MODELVIEW);
 
   // Translate
-  glTranslatef(hereIAm[0],hereIAm[1],hereIAm[2]);
+  glTranslatef(hereIAm[0],hereIAm[1]+hoverY,hereIAm[2]);
 
   // Rotate
   if(turning)
@@ -40,7 +51,7 @@ void Ship::drawShip(Camera* Cam)
 
   // Move a bit forward the next time
   if (moving)
-    hereIAm[2] = hereIAm[2] - 0.050;
+    hereIAm[2] = hereIAm[2] - velocity;
 
 }
 
@@ -63,7 +74,7 @@ void Ship::jumpShip()
     }
   else if (jumping == false)
     {
-      jumpDestination = hereIAm[2] - 4;
+      jumpDestination = hereIAm[2] - jumpLength;
       jumping = true;
     }
 }
@@ -91,9 +102,9 @@ void Ship::turn()
 
   // Move by the x axis a bit
   if(movingLeft)
-    { hereIAm[0] = hereIAm[0]-0.025; }
+    { hereIAm[0] = hereIAm[0]-turnSpeed; }
   else
-    { hereIAm[0] = hereIAm[0]+0.025; }
+    { hereIAm[0] = hereIAm[0]+turnSpeed; }
 
   // Make floats behave!
   if (distanceLeft < 0.01)
@@ -103,7 +114,7 @@ void Ship::turn()
   if (distanceLeft == 0)
     {
       hereIAm[0] = cube;
-      angleZ = 0;
+      turnAngle = 0;
       turning = false;
     }
 }
@@ -112,50 +123,53 @@ void Ship::turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft)
 {
   if ( !movingLeft )
     {
-      if ( (distanceLeft < 0.5) && (angleZ > 0) )
+      if ( (distanceLeft < 0.5) && (turnAngle > 0) )
 	{
 	  // We are moving right and are close to our destination
-	  angleZ = angleZ - 1;
+	  turnAngle--;
 	}
-      else if (angleZ < 30)
+      else if (turnAngle < 30)
 	{
 	  // We are moving right and are far away from our destination
-	  angleZ = angleZ + 1;
+	  turnAngle++;
 	}
     }
   else if (movingLeft)
     {
-      if ( (distanceLeft < 0.5) && (angleZ < 0) )
+      if ( (distanceLeft < 0.5) && (turnAngle < 0) )
 	{
 	  // We are moving left and are close to our destination
-	  angleZ = angleZ + 1;
+	  turnAngle++;
 	}
-      else if (angleZ > -30)
+      else if (turnAngle > -30)
 	{
 	  // We are moving left and are far away from our destination
-	  angleZ = angleZ - 1;
+	  turnAngle--;
 	}
     }
 
-  glRotatef(angleZ, 0.0, 0.0, -10.0);
+  glRotatef(turnAngle, 0.0, 0.0, -10.0);
+  glRotatef(turnAngle, 0.0, -10.0, 0.0);
 }
 
 void Ship::hover()
 {
-  if (hoverY < 100)
+  if (hoverCounter < 100)
     {
-      hereIAm[1] = hereIAm[1]+0.0005;
-      hoverY++;
+      hoverY = hoverY+hoverHeight;
+      hoverCounter++;
     }
-  else if ( (hoverY >= 100) && (hoverY < 200) )
+  else if ( (hoverCounter >= 100) && (hoverCounter < 200) )
     {
-      hereIAm[1] = hereIAm[1]-0.0005;
-      hoverY++;
+      hoverY = hoverY-hoverHeight;
+      hoverCounter++;
     }
   else
     {
+      hoverCounter = 0;
       hoverY = 0;
     }
+
 }
 
 void Ship::jump()
@@ -170,27 +184,30 @@ void Ship::jump()
     distanceLeft = 0.000;
   
   // Adjust X-axis angle
-  if (distanceLeft > 3 && angleX < 40)
+  if (distanceLeft > (0.75*jumpLength) && angleX < 40)
     {
       angleX++;
       angleX++;
       jumpHeight = jumpHeight + 0.025;
     }
-  else if (distanceLeft > 2 && distanceLeft < 3 && angleX > 0)
+  else if (distanceLeft > (0.50*jumpLength) 
+	   && distanceLeft < (0.75*jumpLength) && angleX > 0)
     {
       angleX--;
       angleX--;
       jumpHeight = jumpHeight + 0.025;
     }
-  else if (distanceLeft > 0.75 && distanceLeft < 2 && angleX > -40)
+  else if (distanceLeft > (0.25*jumpLength) 
+	   && distanceLeft < (0.50*jumpLength) && angleX > -40)
     {
       angleX--;
       angleX--;
       jumpHeight = jumpHeight - 0.025;
     }
-  else if (distanceLeft > 0 && distanceLeft < 0.75 && angleX < 0)
+  else if (distanceLeft > 0.00 
+	   && distanceLeft < (0.25*jumpLength) && angleX < 0)
     {
-      angleX = angleX + 3;
+      angleX = angleX + 2;
       if (angleX > 0)
 	angleX = 0;
       jumpHeight = jumpHeight - 0.025;

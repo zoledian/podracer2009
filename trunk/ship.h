@@ -20,15 +20,25 @@ class Ship {
   void drawBody();
   void drawWindshield();
 
+  /* Physics variables */
+  GLfloat jumpLength;
+  GLfloat hoverHeight;
+  GLfloat velocity;
+  GLfloat turnSpeed;
+
+  /* Helper variables */
   GLdouble hereIAm[3];
-  GLdouble cubePosition[5];
-  GLint cube;
+  GLint cube; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
+
   GLboolean moving;
   GLboolean jumping;
   GLboolean turning;
-  GLint hoverY;
-  GLint angleZ;
+
+  GLfloat hoverY;
+  GLint hoverCounter;
+  GLint turnAngle;
   GLint angleX;
+
   GLfloat jumpDestination;
   GLfloat jumpHeight;
 };
