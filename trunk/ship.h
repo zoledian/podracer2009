@@ -15,6 +15,7 @@ class Ship {
  private:
   void turn();
   void turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft);
+  void turnEnd();
   void hover();
   void jump();
   void drawBody();
@@ -33,10 +34,15 @@ class Ship {
   GLboolean moving;
   GLboolean jumping;
   GLboolean turning;
+  GLboolean turningEnd;
+  GLboolean turningEndDirectionIsRight;
 
   GLfloat hoverY;
   GLint hoverCounter;
   GLint turnAngle;
+  GLint turnEndAngle;
+  GLdouble turnEndX;
+  GLint turnEndCounter;
   GLint angleX;
 
   GLfloat jumpDestination;
