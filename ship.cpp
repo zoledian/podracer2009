@@ -10,20 +10,20 @@ Ship::Ship()
   /**
    ** "Physics" variables
    */
-  jumpLength = 6.0; // How far to jump
   hoverHeight = 0.0025; // How wide to hover
   velocity = 0.050; // Speed of ship
   turnSpeed = 0.025; // Speed of switching to next cube
+  jumpLength = 100.0; // How far (times velocity) to jump
 
   /**
    ** Helper variables
    **/
-  hereIAm[0] =  hereIAm[1] = hereIAm[2] = jumpDestination = jumpHeight = 0.0;
+  hereIAm[0] =  hereIAm[1] = hereIAm[2] = 0;
+  jumpDestination = jumpHeight = 0.0;
   moving = turning = jumping = false;
+  currentSpeed = 0.001;
   cube = 0;
   turnAngle = hoverY = angleX = hoverCounter = 0;
-
-
 }
 
 void Ship::drawShip(Camera* Cam)
@@ -49,9 +49,18 @@ void Ship::drawShip(Camera* Cam)
   // Point camera on ship
   Cam->LookAtThis(hereIAm[0],hereIAm[1]+jumpHeight,hereIAm[2]);
 
+  // Accellerate
+
   // Move a bit forward the next time
   if (moving)
-    hereIAm[2] = hereIAm[2] - velocity;
+    {
+        if (currentSpeed <= velocity)
+	  {
+	    currentSpeed = currentSpeed + 0.001;
+	  }
+
+	hereIAm[2] = hereIAm[2] - currentSpeed;
+    }
 
 }
 
@@ -74,7 +83,7 @@ void Ship::jumpShip()
     }
   else if (jumping == false)
     {
-      jumpDestination = hereIAm[2] - jumpLength;
+      jumpDestination = hereIAm[2] - (jumpLength * currentSpeed);
       jumping = true;
     }
 }
@@ -174,7 +183,6 @@ void Ship::hover()
 
 void Ship::jump()
 {
-  
   // Distance we have left
   GLfloat distanceLeft = hereIAm[2] - jumpDestination;
   // Remove negative distance values
@@ -184,28 +192,28 @@ void Ship::jump()
     distanceLeft = 0.000;
   
   // Adjust X-axis angle
-  if (distanceLeft > (0.75*jumpLength) && angleX < 40)
+  if (distanceLeft > (0.75*jumpLength*currentSpeed) && angleX < 40)
     {
       angleX++;
       angleX++;
       jumpHeight = jumpHeight + 0.025;
     }
-  else if (distanceLeft > (0.50*jumpLength) 
-	   && distanceLeft < (0.75*jumpLength) && angleX > 0)
+  else if (distanceLeft > (0.50*jumpLength*currentSpeed) 
+	   && distanceLeft < (0.75*jumpLength*currentSpeed) && angleX > 0)
     {
       angleX--;
       angleX--;
       jumpHeight = jumpHeight + 0.025;
     }
-  else if (distanceLeft > (0.25*jumpLength) 
-	   && distanceLeft < (0.50*jumpLength) && angleX > -40)
+  else if (distanceLeft > (0.25*jumpLength*currentSpeed) 
+	   && distanceLeft < (0.50*jumpLength*currentSpeed) && angleX > -40)
     {
       angleX--;
       angleX--;
       jumpHeight = jumpHeight - 0.025;
     }
   else if (distanceLeft > 0.00 
-	   && distanceLeft < (0.25*jumpLength) && angleX < 0)
+	   && distanceLeft < (0.25*jumpLength*currentSpeed) && angleX < 0)
     {
       angleX = angleX + 2;
       if (angleX > 0)

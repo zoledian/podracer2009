@@ -41,6 +41,8 @@ class Ship {
 
   GLfloat jumpDestination;
   GLfloat jumpHeight;
+
+  GLfloat currentSpeed;
 };
 
 #endif
