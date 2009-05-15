@@ -22,10 +22,11 @@ Ship::Ship()
    **/
   hereIAm[0] =  hereIAm[1] = hereIAm[2] = 0;
   jumpDestination = jumpHeight = 0.0;
-  moving = turning = jumping = false;
+  turnEndX = 0.0;
+  moving = turning = jumping = turningEnd = turningEndDirectionIsRight = false;
   currentSpeed = 0.001;
-  cube = 0;
-  turnAngle = hoverY = angleX = hoverCounter = 0;
+  cube = turnEndCounter = 0;
+  turnAngle = hoverY = angleX = hoverCounter = turnEndAngle = 0;
 }
 
 void Ship::drawShip(Camera* Cam)
@@ -33,11 +34,13 @@ void Ship::drawShip(Camera* Cam)
   glMatrixMode(GL_MODELVIEW);
 
   // Translate
-  glTranslatef(hereIAm[0],hereIAm[1]+hoverY,hereIAm[2]);
+  glTranslatef(hereIAm[0]+turnEndX,hereIAm[1]+hoverY,hereIAm[2]);
 
   // Rotate
   if(turning)
     turn();
+  else if (turningEnd)
+    turnEnd();
   else
     hover();
 
@@ -51,17 +54,15 @@ void Ship::drawShip(Camera* Cam)
   // Point camera on ship
   Cam->LookAtThis(hereIAm[0],hereIAm[1]+jumpHeight,hereIAm[2]);
 
-  // Accellerate
-
-  // Move a bit forward the next time
   if (moving)
-    {
-        if (currentSpeed <= velocity)
-	  {
-	    currentSpeed = currentSpeed + 0.001;
-	  }
-
-	hereIAm[2] = hereIAm[2] - currentSpeed;
+    {  
+      if (currentSpeed <= velocity)
+	{
+	  currentSpeed = currentSpeed + 0.001;
+	}
+      
+      // Move a bit forward the next time
+      hereIAm[2] = hereIAm[2] - currentSpeed;
     }
 
 }
@@ -127,6 +128,11 @@ void Ship::turn()
       hereIAm[0] = cube;
       turnAngle = 0;
       turning = false;
+
+      turningEnd = true;
+      turningEndDirectionIsRight = (!movingLeft);
+      turnEndAngle = 0;
+      turnEndX = 0.0;
     }
 }
 
@@ -161,6 +167,50 @@ void Ship::turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft)
 
   glRotatef(turnAngle, 0.0, 0.0, -10.0);
   glRotatef(turnAngle, 0.0, -10.0, 0.0);
+}
+
+void Ship::turnEnd()
+{
+  turnEndCounter++;
+  GLint turnLength = 10;
+  GLint turnBack = turnLength*2;
+
+  if (turnEndCounter < turnLength)
+    {
+      if (turningEndDirectionIsRight)
+	{
+	  turnEndAngle++;
+	  turnEndX = turnEndX - 0.001;
+	}
+      else
+	{
+	  turnEndAngle--;
+	  turnEndX = turnEndX + 0.001;
+	}
+    }
+  else if ( (turnEndCounter >= turnLength )
+	    && (turnEndCounter < turnBack) )
+    {
+      if (turningEndDirectionIsRight)
+	{
+	  turnEndAngle--;
+	  turnEndX = turnEndX + 0.001;
+	}
+      else
+	{
+	  turnEndAngle++;
+	  turnEndX = turnEndX - 0.001;
+	}
+    }
+  else
+    {
+      turnEndAngle = 0;
+      turnEndX = 0.0;
+      turningEnd = false;
+      turnEndCounter = 0;
+    }
+  
+  glRotatef(turnEndAngle, 0.0, -10.0, 0.0);
 }
 
 void Ship::hover()
