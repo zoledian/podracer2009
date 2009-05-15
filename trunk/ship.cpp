@@ -10,10 +10,12 @@ Ship::Ship()
   /**
    ** "Physics" variables
    */
-  hoverHeight = 0.0025; // How wide to hover
-  velocity = 0.050; // Speed of ship
-  turnSpeed = 0.025; // Speed of switching to next cube
-  jumpLength = 100.0; // How far (times velocity) to jump
+  hoverHeight = 0.0025; // How high/low to hover
+  velocity = 0.050;     // Speed of ship
+  turnSpeed = 0.050;    // Speed of switching to next cube
+                        // * must be abled to divide with 1! *
+  jumpLength = 100.0;   // How far (times velocity) to jump
+                        // (100 -> 5.0 steps if vel = 0.050)
 
   /**
    ** Helper variables
