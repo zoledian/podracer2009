@@ -7,48 +7,60 @@
 class Ship {
  public:
   Ship();
-  void drawShip(Camera* cam);
-  void moveHere(GLint cubeNr); // cube nr 1 - 5
+  void drawShip(Camera* cam, GLdouble yDistance, GLdouble angle);
+  void moveHere(GLint cubeNr);
   void jumpShip();
   GLdouble* getPosition();
 
  private:
   void turn();
-  void turnRotateZ(GLboolean movingLeft, GLfloat distanceLeft);
-  void turnEnd();
+  void turnRotateZ(GLboolean movingLeft, GLdouble distanceLeft);
+  void wiggle();
   void hover();
   void jump();
+  void gravity(GLdouble yDistance, GLdouble angle);
+
   void drawBody();
   void drawWindshield();
 
+  void printDebug();
+
   /* Physics variables */
-  GLfloat jumpLength;
-  GLfloat hoverHeight;
-  GLfloat velocity;
-  GLfloat turnSpeed;
+  GLdouble jumpLength;
+  GLdouble hoverHeight;
+  GLdouble velocity;
+  GLdouble turnSpeed;
 
   /* Helper variables */
-  GLdouble hereIAm[3];
-  GLint cube; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
+  // Ship specific
+  GLdouble _location[3];
+  GLint _cubeNr; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
+  GLdouble _angle;
 
-  GLboolean moving;
-  GLboolean jumping;
-  GLboolean turning;
-  GLboolean turningEnd;
-  GLboolean turningEndDirectionIsRight;
+  // States
+  GLboolean _moving;
+  GLboolean _jumping;
+  GLboolean _turning;
+  GLboolean _wiggle;
+  GLboolean _jumpDrop;
 
-  GLfloat hoverY;
-  GLint hoverCounter;
-  GLint turnAngle;
-  GLint turnEndAngle;
-  GLdouble turnEndX;
-  GLint turnEndCounter;
+  // Misc
+  GLboolean _wiggleToRight;
+
+  GLdouble _hoverY;
+  GLint _hoverCounter;
+
+  GLint _turnAngle;
+  GLint _wiggleAngle;
+  GLdouble _wiggleX;
+  GLint _wiggleCounter;
+
   GLint angleX;
 
-  GLfloat jumpDestination;
-  GLfloat jumpHeight;
+  GLdouble jumpDestination;
+  GLdouble jumpHeight;
 
-  GLfloat currentSpeed;
+  GLdouble currentSpeed;
 };
 
 #endif
