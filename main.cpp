@@ -6,6 +6,7 @@
 #include "ship.h"
 #include "loadlevel.h"
 #include "skybox.h"
+#include "collision.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -23,7 +24,7 @@ Ship* Spaceship = new Ship();
 Camera* Cam = new Camera();
 LoadLevel* loadLevel = new LoadLevel("level.dat"); // Testlevel
 SkyBox* skyBox = new SkyBox(); // Skybox
-
+Collision* collision = new Collision();
 
 /*** 
  *** INPUT FUNCTIONS
@@ -74,6 +75,12 @@ void display()
   skyBox->drawSkyBox();
 
   loadLevel->drawLevel();
+  
+  // Use collision to find the distance to the block below
+  // the ship and the blocks angle
+  collision->setLevelVector(loadLevel->getLevelVector());
+  collision->setShipxyz(Spaceship->getPosition());
+  collision->findBlockBelow();
 
   Spaceship->drawShip(Cam);
   

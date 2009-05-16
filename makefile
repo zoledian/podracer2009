@@ -1,4 +1,4 @@
-OBJECTS :=  main.o camera.o ship.o block.o loadlevel.o skybox.o
+OBJECTS :=  main.o camera.o ship.o block.o loadlevel.o skybox.o collision.o
 CC = g++ -g -Wall 
 name = podracer2009
 version = 0.1
@@ -23,6 +23,9 @@ loadlevel.o : loadlevel.cpp loadlevel.h
 
 skybox.o : skybox.cpp skybox.h
 	$(CC)  -c skybox.cpp
+
+collision.o : collision.cpp collision.h
+	$(CC)  -c collision.cpp
 
 clean :
 	rm -Rf $(name)-$(version) $(OBJECTS)

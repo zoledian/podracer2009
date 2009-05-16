@@ -140,3 +140,8 @@ void LoadLevel::drawLevel()
      glPopMatrix();
      glPopAttrib(); // Restore color
 }
+
+vector<Block*> LoadLevel::getLevelVector()
+{
+     return blocks_;
+}
