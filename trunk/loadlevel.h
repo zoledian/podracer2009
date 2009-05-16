@@ -9,6 +9,7 @@ public:
      ~LoadLevel();
      void loadNewLevel(std::string);
      void drawLevel();
+     std::vector<Block*> getLevelVector();
      
 private:
      std::vector<Block*> blocks_;
