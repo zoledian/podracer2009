@@ -7,6 +7,12 @@ class Camera {
  public:
   Camera();
   void LookAtThis(GLdouble x, GLdouble y, GLdouble z);
+  GLboolean slowZ;
+
+ private:
+  GLdouble _location[3];
+  GLdouble _speed;
+
 };
 
 #endif

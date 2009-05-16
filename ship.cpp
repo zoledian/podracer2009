@@ -5,7 +5,7 @@
 #include <GL/glut.h>
 using namespace std;
 
-Ship::Ship()
+Ship::Ship(Camera* cam)
 { 
   /**
    ** "Physics" variables
@@ -30,9 +30,13 @@ Ship::Ship()
     = _wiggleAngle = 0;
 
   currentSpeed = 0.001;
+
+  _camera = cam;
+  _camera->LookAtThis(0.0,0.0,-100.0);
+  _camera->slowZ = true;
 }
 
-void Ship::drawShip(Camera* Cam, GLdouble yDistance, GLdouble angle)
+void Ship::drawShip(GLdouble yDistance, GLdouble angle)
 {
   glMatrixMode(GL_MODELVIEW);
 
@@ -64,7 +68,7 @@ void Ship::drawShip(Camera* Cam, GLdouble yDistance, GLdouble angle)
   drawWindshield();
 
   // Point camera on ship
-  Cam->LookAtThis(_location[0],_location[1],_location[2]);
+  _camera->LookAtThis(_location[0],_location[1],_location[2]);
 
   // Move forward next time & accelerate
   if (_moving)
@@ -353,24 +357,18 @@ void Ship::gravity(GLdouble yDistance, GLdouble angle)
     {
       _location[1] = _location[1] + 0.20;
     }
-  /* Uncomment this if you want to disable "crashing" on level blocks
-     else if (yDistance < 0.5
-     && yDistance > 0.01)
-     {
-	 _location[1] = yDistance;
-	 }
-  */
   else if ((yDistance > 1.1 || yDistance == 0.0)
 	   && (!_jumping || (_jumping && _jumpDrop)))
     {
-      _location[1] = _location[1] - 0.1;
+      _location[1] = _location[1] - 0.10;
     }
   
   if ((yDistance < 0.0) 
       || (_location[1] < -10))
     {
       // We are dead
-      new (this)Ship();
+      _camera->slowZ = true;
+      new (this)Ship(_camera);
     }
   
   // Compensate for block angle
