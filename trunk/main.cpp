@@ -20,8 +20,8 @@ using namespace std;
 /*** 
  *** GLOBAL VARIABLES & OBJECTS 
  **/
-Ship* Spaceship = new Ship();
 Camera* Cam = new Camera();
+Ship* Spaceship = new Ship(Cam);
 LoadLevel* loadLevel = new LoadLevel("level.dat"); // Testlevel
 SkyBox* skyBox = new SkyBox(); // Skybox
 Collision* collision = new Collision();
@@ -47,6 +47,7 @@ void inputNormKey(unsigned char key, int mouseX, int mouseY)
     }
   else if (key == '\32' || key == 'm' || key == 'M')
     {
+      Cam->slowZ = false;
       Spaceship->jumpShip();
     }
 }
@@ -82,7 +83,7 @@ void display()
   collision->setShipxyz(Spaceship->getPosition());
   collision->findBlockBelow();
 
-  Spaceship->drawShip(Cam, collision->getyDistance(), collision->getAngle());
+  Spaceship->drawShip(collision->getyDistance(), collision->getAngle());
   
   //Cam->LookAtThis(0.0,0.0,0.0);
 
