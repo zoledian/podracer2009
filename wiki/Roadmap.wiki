@@ -1,18 +1,20 @@
 == Version 0.1 ==
 
-  * Definera glstates (push o pop wrappers)
+  * ~~(Definera glstates (push o pop wrappers)~~ _REMOVED_
 
-  * Rita ut block i opengl
+  * ~~Rita ut block i opengl~~
 
-  * Rita ut ett skepp som kon
+  * ~~Rita ut ett skepp som kon~~
 
-  * Göra inputklassen, koppla ihop med skeppet så vi kan flyga (framåt och åt sidorna)
+  * ~~Göra inputklassen, koppla ihop med skeppet så vi kan flyga (framåt och åt sidorna)~~
 
-  * Definera textformatet för banan
+  * ~~Definera textformatet för banan~~
 
-  * Ladda in banan i array från textfil
+  * ~~Ladda in banan i array från textfil~~
 
-  * Rita ut banan från arrayen
+  * ~~Rita ut banan från arrayen~~
+
+  * ~~Gör så att skeppet kan hoppa~~
 
   * Koppla ihop bana och skepp
 	
@@ -22,7 +24,6 @@
 
 == I framtiden ==
 
-  * Gör så att skeppet kan hoppa
   * Snygga till skeppet
   * Lägga textur på skeppet
   * Lägg till ljus
