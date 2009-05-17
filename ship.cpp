@@ -5,6 +5,8 @@
 #include <GL/glut.h>
 #include <string.h>
 #include <sstream>
+#include "readjpeg.h"
+#include "stdlib.h"
 using namespace std;
 
 Ship::Ship(Camera* cam)
@@ -37,6 +39,10 @@ Ship::Ship(Camera* cam)
   _camera = cam;
   _camera->LookAtThis(0.0,0.0,-100.0);
   _camera->slowZ = true;
+
+  textureId = loadTexture("./textures/ship3.jpg");
+
+  hereWeDie = -10.0;
 }
 
 void Ship::drawShip(GLdouble yDistance, GLdouble angle)
@@ -328,13 +334,28 @@ void Ship::drawBody()
   // Scale
   glScalef(0.7,0.3,1.0); //Size of cuboid
 
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, textureId);
+
+ 
+  glEnable(GL_TEXTURE_GEN_S);
+  glEnable(GL_TEXTURE_GEN_T);
+  glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+  glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+ 
+  glEnable(GL_TEXTURE_GEN_R);
+
   /* Draw Cuboid "body" */
-  glColor3f(1,0,0);
+  glColor3f(0.5,0,0);
   //glutSolidCube(1);
   glutSolidSphere (0.6, // radius
 		   20, // slices
 		   20 // stacks
 		   );
+
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_TEXTURE_GEN_S);
+  glDisable(GL_TEXTURE_GEN_T);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -347,7 +368,7 @@ void Ship::drawWindshield()
 
 
   /* Draw Sphere "windshield" */
-  glColor3f(0,1,0);
+  glColor3f(1,1,1);
   glTranslatef(0.0,0.0,-0.25);
   glutSolidSphere(0.27, // Radius
 		  10,  // slices 
@@ -364,21 +385,36 @@ void Ship::gravity(GLdouble yDistance, GLdouble angle)
 {
   _falling = false;
 
+  if (yDistance < 0.05 && yDistance > -0.05)
+    yDistance = 0.0;
+
+  cout << "Y distance: " << yDistance << endl;
+  cout << "Y location: " << _location[1] << endl;
+  cout << "Die at: " << hereWeDie << endl;
+  cout << endl;
+
+  if (yDistance != 0.0)
+    hereWeDie = yDistance - 20.0;
+
   // Compensate for block y distance
-  if (yDistance < 0.9
+  if (yDistance < 0.7
       && yDistance > 0.1)
     {
-      _location[1] = _location[1] + 0.20;
+      _location[1] = _location[1] + 0.06;
     }
-  else if ((yDistance > 1.1 || yDistance == 0.0)
-	   && (!_jumping))
+  else if ((yDistance > 1.3) && (!_jumping))
+    {
+      _location[1] = _location[1] - 0.10;
+      _falling = true;
+    }
+  else if ((yDistance == 0.0) && (!_jumping))
     {
       _location[1] = _location[1] - 0.10;
       _falling = true;
     }
   
   if ((yDistance < 0.0) 
-      || (_location[1] < -10))
+      || (_location[1] < hereWeDie))
     {
       // We are dead
       _camera->slowZ = true;
@@ -428,4 +464,44 @@ void Ship::printHighscore()
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
 
+}
+
+GLuint Ship::loadTexture(char* name)
+{
+   GLuint texNum;
+  int width = 0, height = 0;
+  char* pixelData = 0;
+  int nameLen = strlen(name);
+
+  if ((nameLen >= 4 && (!strcmp(name + nameLen - 4, ".jpg")
+			|| !strcmp(name + nameLen - 4, ".JPG")))
+      || (nameLen >= 5 && (!strcmp(name + nameLen - 5, ".jpeg")
+			   || !strcmp(name + nameLen - 5, ".JPEG"))))
+    {
+      read_JPEG_file(name, &pixelData, &width, &height);
+    }
+  /*
+  else if (nameLen >= 4 && (!strcmp(name + nameLen - 4, ".ppm")
+			    || !strcmp(name + nameLen - 4, ".PPM")))
+    {
+      pixelData = readppm(name, &width, &height);
+    }
+  */
+
+  if (!pixelData)
+    exit(0);
+
+  glGenTextures(1, &texNum);
+  glBindTexture(GL_TEXTURE_2D, texNum);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
+	       GL_RGB, GL_UNSIGNED_BYTE, pixelData);
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  free(pixelData);
+
+  return texNum;
 }

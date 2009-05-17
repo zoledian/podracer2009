@@ -27,10 +27,10 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
     _location[0] = _location[0] - _speed;
   if (x > (1.05*_location[0]))
     _location[0] = _location[0] + _speed;
-  if (y < (0.95*(_location[1]-5.0)))
-    _location[1] = _location[1] - _speed;
-  if (y > (1.05*(_location[1]-5.0)))
-    _location[1] = _location[1] + _speed;
+  if (y < (0.90*(_location[1]-5.0)))
+    _location[1] = _location[1] - 0.6*_speed;
+  if (y > (1.10*(_location[1]-5.0)))
+    _location[1] = _location[1] + 0.6*_speed;
 
   if (slowZ)
     {
