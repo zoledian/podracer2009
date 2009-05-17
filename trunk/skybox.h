@@ -5,7 +5,7 @@ class SkyBox {
 
 public: 
 	SkyBox();
-	void drawSkyBox();
+	void drawSkyBox(GLdouble*);
 };
 
 #endif

@@ -51,3 +51,8 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 	    x, y, z-3,
 	    0, 1, 0);
 }
+
+GLdouble* Camera::getLocation()
+{
+  return _location;
+}
