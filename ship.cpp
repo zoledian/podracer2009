@@ -3,6 +3,8 @@
 #include "math.h"
 #include "camera.h"
 #include <GL/glut.h>
+#include <string.h>
+#include <sstream>
 using namespace std;
 
 Ship::Ship(Camera* cam)
@@ -24,7 +26,8 @@ Ship::Ship(Camera* cam)
   jumpDestination = jumpHeight = 0.0;
   _wiggleX = _angle = 0.0;
 
-  _moving = _turning = _jumping = _wiggle = _wiggleToRight = _jumpDrop = false;
+  _moving = _turning = _jumping = _wiggle = _wiggleToRight
+    = _falling = false;
 
   _cubeNr = _wiggleCounter = _turnAngle = _hoverY = angleX = _hoverCounter 
     = _wiggleAngle = 0;
@@ -38,6 +41,8 @@ Ship::Ship(Camera* cam)
 
 void Ship::drawShip(GLdouble yDistance, GLdouble angle)
 {
+  printHighscore();
+
   glMatrixMode(GL_MODELVIEW);
 
   // "Gravity"
@@ -102,7 +107,7 @@ void Ship::jumpShip()
       _moving = true;
       return;
     }
-  else if (_jumping == false)
+  else if (_jumping == false && _falling == false)
     {
       jumpDestination = _location[2] - (jumpLength * currentSpeed);
       _jumping = true;
@@ -253,6 +258,8 @@ void Ship::hover()
 
 void Ship::jump()
 {
+  GLint maxAngle = 25;
+
   // Distance we have left
   GLfloat distanceLeft = _location[2] - jumpDestination;
 
@@ -261,42 +268,45 @@ void Ship::jump()
     distanceLeft = 0.000;
   
   // Adjust X-axis angle
-  if (distanceLeft > (0.75*jumpLength*currentSpeed) && angleX < 40)
+  if ( (distanceLeft > (0.75*jumpLength*currentSpeed)))
     {
-      angleX++;
-      jumpHeight = jumpHeight + 0.05;
-      _location[1] = _location[1] + 0.05;
+      jumpHeight = jumpHeight + 0.06;
+      _location[1] = _location[1] + 0.06;
+
+      if (angleX < maxAngle)
+	angleX += 1;
     }
-  else if (distanceLeft > (0.50*jumpLength*currentSpeed) 
-	   && distanceLeft < (0.75*jumpLength*currentSpeed) && angleX > 0)
+  else if ( (distanceLeft > ( 0.50*jumpLength*currentSpeed ))
+	    && (distanceLeft <= ( 0.75*jumpLength*currentSpeed )))
     {
-      angleX--;
-      jumpHeight = jumpHeight + 0.05;
-      _location[1] = _location[1] + 0.05;
+      jumpHeight = jumpHeight + 0.04;
+      _location[1] = _location[1] + 0.04;
+      if (angleX < maxAngle)
+	angleX += 1;
     }
-  else if (distanceLeft > (0.25*jumpLength*currentSpeed) 
-	   && distanceLeft < (0.50*jumpLength*currentSpeed) && angleX > -40)
+  else if ( (distanceLeft > (0.25*jumpLength*currentSpeed))
+	    && (distanceLeft <= (0.50*jumpLength*currentSpeed)))
     {
-      angleX--;
-      jumpHeight = jumpHeight - 0.05;
-      _jumpDrop = true;
-      //_location[1] = _location[1] - 0.05;
-    }
-  else if (distanceLeft > 0.00 
-	   && distanceLeft < (0.25*jumpLength*currentSpeed) && angleX < 0)
-    {
-      angleX = angleX + 1;
+      jumpHeight = jumpHeight - 0.04;
+      _location[1] = _location[1] - 0.04;
+      /*
       if (angleX > 0)
-	angleX = 0;
-      jumpHeight = jumpHeight - 0.05;
-      //_location[1] = _location[1] + 0.05;
+	angleX -= 1;
+      */
+    }
+    else if ( (distanceLeft > 0.00 )
+	      && ( distanceLeft <= (0.25*jumpLength*currentSpeed) ))
+    {
+      if (angleX > 0)
+	angleX -= 1;
+      jumpHeight = jumpHeight - 0.06;
+      _location[1] = _location[1] - 0.06;
     }
     
     // Are we done with our jump?
     if (distanceLeft == 0.0 || distanceLeft < 0.0)
       {
 	_jumping = false;
-	_jumpDrop = false;
 	jumpHeight = 0.0;
 	angleX = 0;
       }
@@ -308,6 +318,7 @@ void Ship::jump()
     //glTranslatef(0.0,jumpHeight,0.0);
   
 }
+
 
 void Ship::drawBody()
 {
@@ -351,6 +362,8 @@ void Ship::drawWindshield()
 
 void Ship::gravity(GLdouble yDistance, GLdouble angle)
 {
+  _falling = false;
+
   // Compensate for block y distance
   if (yDistance < 0.9
       && yDistance > 0.1)
@@ -358,9 +371,10 @@ void Ship::gravity(GLdouble yDistance, GLdouble angle)
       _location[1] = _location[1] + 0.20;
     }
   else if ((yDistance > 1.1 || yDistance == 0.0)
-	   && (!_jumping || (_jumping && _jumpDrop)))
+	   && (!_jumping))
     {
       _location[1] = _location[1] - 0.10;
+      _falling = true;
     }
   
   if ((yDistance < 0.0) 
@@ -387,4 +401,31 @@ void Ship::printDebug()
   cout << "jumping? " << _jumping << endl;
   cout << "turning? " << _turning << endl;
   cout << "turning end? " << _wiggle << endl;
+}
+
+void Ship::printHighscore()
+{
+  glMatrixMode(GL_PROJECTION);
+  //glMatrixMode(GL_MODELVIEW);
+
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+  string text = "Highscore: ";
+  
+  // Skapa en stringstream
+  std::stringstream ss;
+
+  // Lägg in saker i den..
+  ss << "Highscore: " << (GLint) fabs(_location[2]);
+
+  // Konvertera till en string
+  std::string s( ss.str() );
+
+  for ( unsigned int i = 0; i < s.length(); i++)
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, s[i]);
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+
 }
