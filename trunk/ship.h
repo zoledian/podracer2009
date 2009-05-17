@@ -27,6 +27,8 @@ class Ship {
 
   void printDebug();
 
+  GLuint loadTexture(char* name);
+
   /* Physics variables */
   GLdouble jumpLength;
   GLdouble hoverHeight;
@@ -65,6 +67,10 @@ class Ship {
   GLdouble currentSpeed;
 
   Camera* _camera;
+
+  GLuint textureId;
+
+  GLdouble hereWeDie; // FIXME
 };
 
 #endif
