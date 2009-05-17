@@ -87,14 +87,9 @@ void LoadLevel::loadNewLevel(string name)
 		      xyzMiddle[1] = xyzRotatePos[1] + ((sqrt(2)/2) * sin((angle+45)*(M_PI/180)));
 		      xyzMiddle[2] = xyzRotatePos[2] - ((sqrt(2)/2) * cos((angle+45)*(M_PI/180)));	  
 
-		      // Calculate y,z for the next block to rotate around
+		      // Calculate new x,y for neg x,y since it was rotated away
 		      xyzRotateNeg[1] = xyzRotatePos[1] + sin((180-angle-90)*(M_PI/180));
 		      xyzRotateNeg[2] = xyzRotatePos[2] + cos((180-angle-90)*(M_PI/180));
-		      xyzRotateNeg[1] = xyzRotateNeg[1] + sin(angle*(M_PI/180));
-		      xyzRotateNeg[2] = xyzRotateNeg[2] - cos(angle*(M_PI/180));
-		      xyzRotatePos[1] = xyzRotatePos[1] + sin(angle*(M_PI/180));
-		      xyzRotatePos[2] = xyzRotatePos[2] - cos(angle*(M_PI/180));
-		      
 		    }
 		  else if((angle - oldAngle) < 0)
 		    {
@@ -102,28 +97,22 @@ void LoadLevel::loadNewLevel(string name)
 		      xyzMiddle[1] = xyzRotateNeg[1] + ((sqrt(2)/2) * sin((angle-45)*(M_PI/180)));
 		      xyzMiddle[2] = xyzRotateNeg[2] - ((sqrt(2)/2) * cos((angle-45)*(M_PI/180)));
 
-		      // Calculate y,z for the next block to rotate around
+		      // Calculate new x,y for neg x,y since it was rotated away
 		      xyzRotatePos[1] = xyzRotateNeg[1] - sin((180+angle-90)*(M_PI/180));
 		      xyzRotatePos[2] = xyzRotateNeg[2] + cos((180+angle-90)*(M_PI/180));
-		      xyzRotatePos[1] = xyzRotatePos[1] + sin(angle*(M_PI/180));
-		      xyzRotatePos[2] = xyzRotatePos[2] - cos(angle*(M_PI/180));
-		      xyzRotateNeg[1] = xyzRotateNeg[1] + sin(angle*(M_PI/180));
-		      xyzRotateNeg[2] = xyzRotateNeg[2] - cos(angle*(M_PI/180));
-
 		    }
 		  else
 		    {
 		      // Calculate the middle of the current block
 		      xyzMiddle[1] = xyzRotatePos[1] + ((sqrt(2)/2) * sin((angle+45)*(M_PI/180)));
 		      xyzMiddle[2] = xyzRotatePos[2] - ((sqrt(2)/2) * cos((angle+45)*(M_PI/180)));
-
-		      // Calculate y,z for the next block to rotate around
-		      xyzRotatePos[1] = xyzRotatePos[1] + sin(angle*(M_PI/180));
-		      xyzRotatePos[2] = xyzRotatePos[2] - cos(angle*(M_PI/180));
-		      xyzRotateNeg[1] = xyzRotateNeg[1] + sin(angle*(M_PI/180));
-		      xyzRotateNeg[2] = xyzRotateNeg[2] - cos(angle*(M_PI/180));
-
 		    }
+		  
+		  // Calculate y,z for the next block to rotate around
+		  xyzRotatePos[1] = xyzRotatePos[1] + sin(angle*(M_PI/180));
+		  xyzRotatePos[2] = xyzRotatePos[2] - cos(angle*(M_PI/180));
+		  xyzRotateNeg[1] = xyzRotateNeg[1] + sin(angle*(M_PI/180));
+		  xyzRotateNeg[2] = xyzRotateNeg[2] - cos(angle*(M_PI/180));
 		  
 		}			
 	      // Create a block
