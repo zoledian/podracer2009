@@ -10,12 +10,24 @@ public:
      GLdouble getyDistance();
      GLdouble getAngle();
      void findBlockBelow();
+     int getBlockBelowType();
 
 private:
      GLdouble angle_;
      GLdouble yDistance_;
      GLdouble xyz_[3];
+     GLdouble blockAngle;
+     GLdouble blockZSize;
+     GLdouble beginCoord[2];
+     GLdouble endCoord[2];
+     GLdouble diffY;
+     GLdouble diffZ;
+     GLdouble traveledDistance;
+     int blockBelowType_;
+     int blockBelowIndex_;
      std::vector<Block*> level_;
+     
+     void setYdistance();
 };
 
 #endif
