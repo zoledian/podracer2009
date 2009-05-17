@@ -3,6 +3,7 @@
 
 #include "camera.h"
 #include <GL/glut.h>
+#include <math.h>
 
 class Ship {
  public:
@@ -19,6 +20,7 @@ class Ship {
   void hover();
   void jump();
   void gravity(GLdouble yDistance, GLdouble angle);
+  void printHighscore();
 
   void drawBody();
   void drawWindshield();
@@ -42,7 +44,7 @@ class Ship {
   GLboolean _jumping;
   GLboolean _turning;
   GLboolean _wiggle;
-  GLboolean _jumpDrop;
+  GLboolean _falling;
 
   // Misc
   GLboolean _wiggleToRight;
