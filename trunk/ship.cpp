@@ -388,11 +388,6 @@ void Ship::gravity(GLdouble yDistance, GLdouble angle)
   if (yDistance < 0.05 && yDistance > -0.05)
     yDistance = 0.0;
 
-  cout << "Y distance: " << yDistance << endl;
-  cout << "Y location: " << _location[1] << endl;
-  cout << "Die at: " << hereWeDie << endl;
-  cout << endl;
-
   if (yDistance != 0.0)
     hereWeDie = yDistance - 20.0;
 
