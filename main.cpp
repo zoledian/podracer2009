@@ -73,7 +73,7 @@ void display()
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
 
-  skyBox->drawSkyBox();
+  skyBox->drawSkyBox(Cam->getLocation());
 
   loadLevel->drawLevel();
   

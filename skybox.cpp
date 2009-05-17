@@ -7,7 +7,7 @@ SkyBox::SkyBox()
 {
 }
 
-void SkyBox::drawSkyBox()
+void SkyBox::drawSkyBox(GLdouble* camPos)
 {
 	// Save states
 	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -22,26 +22,6 @@ void SkyBox::drawSkyBox()
         // Enable Gouraud shading
 	glShadeModel(GL_SMOOTH);
 	
-/*        // Make skybox stick
-	GLdouble *cameraMatrix = zprGetCameraMatrix();
-	GLdouble newMatrix[16];
-	
-	int i = 0;
-	GLdouble temp;
-	while(i<16)
-	{
-		temp = cameraMatrix[i];
-		newMatrix[i] = temp;
-		i = i + 1;
-	}
-	
-	newMatrix[12] = 0;
-	newMatrix[13] = 0;
-	newMatrix[14] = 0;
-	
-	
-	glLoadMatrixd(newMatrix);
-*/
 	// Draw cube
 	//glEnable(GL_TEXTURE_2D);
 
@@ -53,13 +33,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,-1);
 	//glTexCoord2f(0, 0);
-	glVertex3f(-50, 50, -50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(50, 50, -50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glTexCoord2f(1, 1);
-	glVertex3f(50, -50, -50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(-50, -50, -50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	glEnd();
   
 	// Right side
@@ -67,13 +47,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(1,0,0);
 	//glTexCoord2f(1, 1);
-	glVertex3f(50, -50, 50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 1);
-	glVertex3f(50, -50, -50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	//glTexCoord2f(0, 0);
-	glVertex3f(50, 50, -50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	//glTexCoord2f(1, 0);
-	glVertex3f(50, 50, 50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	glEnd(); 
 
 	// Back side
@@ -81,13 +61,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,1);
 	//glTexCoord2f(1, 1);
-	glVertex3f(-50, -50, 50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 1);
-	glVertex3f(50, -50, 50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 0);
-	glVertex3f(50, 50, 50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(1, 0);
-	glVertex3f(-50, 50, 50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	glEnd();
 
 	// Left side
@@ -95,13 +75,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(-1,0,0);
 	//glTexCoord2f(1, 1);
-	glVertex3f(-50, -50, -50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	//glTexCoord2f(0, 1);
-	glVertex3f(-50, -50, 50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 0);
-	glVertex3f(-50, 50, 50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(1, 0);
-	glVertex3f(-50, 50, -50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glEnd(); 
 
 	// Top side
@@ -109,13 +89,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(0,1,0);
 	//glTexCoord2f(0, 1);
-	glVertex3f(-50, 50, -50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	//glTexCoord2f(0, 0);
-	glVertex3f(-50, 50, 50);
+	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(1, 0);
-	glVertex3f(50, 50, 50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(1, 1);
-	glVertex3f(50, 50, -50);
+	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glEnd();
 
 	// Bottom side
@@ -123,13 +103,13 @@ void SkyBox::drawSkyBox()
 	glBegin(GL_POLYGON);
 	glNormal3f(0,-1,0);
 	//glTexCoord2f(1, 0);
-	glVertex3f(50, -50, -50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	//glTexCoord2f(1, 1);
-	glVertex3f(50, -50, 50);
+	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 1);
-	glVertex3f(-50, -50, 50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
 	//glTexCoord2f(0, 0);
-	glVertex3f(-50, -50, -50);
+	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	glEnd();
 
   	/* Restore states */
