@@ -30,8 +30,8 @@
 
 == Collision Detection Class Branstorm ==
   
-  * Ska kunna få ut avstånd i y-axeln till blocket under, från skeppet sett (GLdouble).
+  * ~~Ska kunna få ut avstånd i y-axeln till blocket under, från skeppet sett (GLdouble).~~
   * Kontrollera om krock skett framför på samma y-nivå.
   
 == LoadLevel ==
-  * getHeight - Returnerar Y som GLdouble värdet för banan som kameran ska rätta sig till
+  * ~~getyDistance - Returnerar Y som GLdouble värdet för banan som kameran ska rätta sig till~~
