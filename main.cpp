@@ -20,11 +20,11 @@ using namespace std;
 /*** 
  *** GLOBAL VARIABLES & OBJECTS 
  **/
-Camera* Cam = new Camera();
-Ship* Spaceship = new Ship(Cam);
-LoadLevel* loadLevel = new LoadLevel("level.dat"); // Testlevel
-SkyBox* skyBox = new SkyBox(); // Skybox
-Collision* collision = new Collision();
+Camera* Cam;
+Ship* Spaceship;
+LoadLevel* loadLevel;
+SkyBox* skyBox;
+Collision* collision;
 
 /*** 
  *** INPUT FUNCTIONS
@@ -121,14 +121,15 @@ int main(int argc, char **argv)
   glutInitWindowSize(800, 800);
   glutCreateWindow("Podracer 2009");
 
+  
   // Ensure that the machine the program is running on has
   //  new enough OpenGL drivers
-  if (!glGetString(GL_SHADING_LANGUAGE_VERSION))
+  /* if (!glGetString(GL_SHADING_LANGUAGE_VERSION))
     {
       cout << "Error: Your OpenGL driver does not support OpenGL 2.0 shaders\n";
       // fprintf(stderr, "Error: Your OpenGL driver does not support OpenGL 2.0 shaders\n");
       return 0;
-    }
+      }*/
 
   // Register our functions with GLUT
   glutDisplayFunc(display);
@@ -136,6 +137,13 @@ int main(int argc, char **argv)
   glutSpecialFunc(inputSpecKey);
   glutTimerFunc(20, timer, 0);
 
+
+  Cam = new Camera();
+  Spaceship = new Ship(Cam);
+  loadLevel = new LoadLevel("level.dat"); // Testlevel
+  skyBox = new SkyBox(); // Skybox
+  collision = new Collision();
+  
   // Enter GLUT's main loop; this function will never return
   glutMainLoop();
 
