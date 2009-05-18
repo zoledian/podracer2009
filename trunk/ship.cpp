@@ -18,7 +18,7 @@ Ship::Ship(Camera* cam)
   velocity = 0.050;     // Speed of ship
   turnSpeed = 0.050;    // Speed of switching to next cube
                         // * must be abled to divide with 1! *
-  jumpLength = 100.0;   // How far (times velocity) to jump
+  jumpLength = 80.0;   // How far (times velocity) to jump
                         // (100 -> 5.0 steps if vel = 0.050)
 
   /**
@@ -172,6 +172,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       if (_jumpAngleX > -50)
 	_jumpAngleX--;
     }
+  // Keep ship near block!
   else if (blockDistance < 0.5)
     {
       _location[1] += 0.01;
@@ -193,7 +194,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
   */
 
   // Are we dead?
-  if ( (blockDistance < 0.0))
+  if ( (blockDistance < -0.10))
     {
       cout << "You died because: blockDistance = " << blockDistance << endl;
       _camera->slowZ = true;
@@ -205,6 +206,9 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
+  else if (blockDistance > -0.10
+	   && blockDistance < 0.00)
+    _location[1] += 0.10;
 
 }
 
