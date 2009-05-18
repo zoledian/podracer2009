@@ -201,7 +201,6 @@ void Collision::setYdistance()
       
       // Calc. the distance from block to ship
       yDistance_ = xyz_[1] - (beginCoord[0] + (diffY * traveledDistance));  
-      cout << " CubeY: " << (beginCoord[0] + (diffY * traveledDistance)) << endl;
     }
   else
     {
