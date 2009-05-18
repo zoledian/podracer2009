@@ -17,7 +17,8 @@ private:
      GLdouble yDistance_;
      GLdouble xyz_[3];
      GLdouble blockAngle;
-     GLdouble blockZSize;
+     GLdouble blockZend;
+     GLdouble blockZbegin;
      GLdouble beginCoord[2];
      GLdouble endCoord[2];
      GLdouble diffY;

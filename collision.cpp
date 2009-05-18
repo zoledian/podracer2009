@@ -13,7 +13,8 @@ Collision::Collision()
      blockBelowType_ = 1;
      blockBelowIndex_ = -1;
      blockAngle = 0;
-     blockZSize = 0;
+     blockZbegin = 0;
+     blockZend = 0;
      diffY = 0;
      diffZ = 0;
      traveledDistance = 0;
@@ -47,8 +48,11 @@ void Collision::setLevelVector(vector<Block*> level)
 
 void Collision::findBlockBelow()
 {
-     int searchA = 0;
-     int searchB = level_.size();
+     //int searchA = 0;
+     //int searchB = level_.size();
+
+     int searchA = level_.size() -1;
+     int searchB = 0;
 
      /* SPEED OPTIMIZED, BUT WITH BUGS!!! */
      /*    // Find the closest block that is below xyz_
@@ -109,60 +113,63 @@ void Collision::findBlockBelow()
 	 blockBelowIndex_ = 0;
        }
 
-
      // Check if the ship is still above the same block
-     if( abs(level_[blockBelowIndex_]->getCoord()[2] - xyz_[2]) > blockZSize ||
-	 abs(level_[blockBelowIndex_]->getCoord()[0] - xyz_[0]) > 0.5)
-       {
-     
-	 while(searchA <= (searchB - 1) && found == false)
-	   {
-	     // Calculate the Z size of a block, take angle into account
-	     blockAngle = level_[searchA]->getAngle();
-	     if(blockAngle > 0)
-	       {
-		 blockZSize = sin((90 - blockAngle)*(M_PI/180));
-	       }
-	     else if(blockAngle < 0)
-	       {
-		 blockZSize = cos(blockAngle*(M_PI/180));
-	       }
-	     else
-	       {
-		 blockZSize = 0.5;
-	       }
-	     
-	     // Is the ship above the block?
-	     if( abs(level_[searchA]->getCoord()[2] - xyz_[2]) > blockZSize ||
-		 abs(level_[searchA]->getCoord()[0] - xyz_[0]) > 0.5 )
-	       {
-		 searchA++;
-	       }
-	     else   
-	       {
-		 found = true;
-		 blockBelowIndex_ = searchA;
-	       }
-	   }
-	 
+     if( (xyz_[2] <= blockZbegin) && (xyz_[2] >= blockZend) )
+     {
+	  if( ((level_[blockBelowIndex_]->getCoord()[0] - xyz_[0]) <= 0.5) && 
+	      ((level_[blockBelowIndex_]->getCoord()[0] - xyz_[0]) >= -0.5) )
+	  {
+	       found = true;
+	  }
+	  else
+	  {
+	       found = false;
+	  }
+     }
 
-	 // If we found the block, save data
-	 if(found == true)
-	   {
-	     angle_ = level_[searchA]->getAngle();
-	     //setYdistance();
-	     blockBelowType_ = level_[searchA]->getType();
-	   }
-	 else
-	   {
-	     angle_ = 0;
-	     yDistance_ = 0;
-	     blockBelowType_ = 1;
-	     blockBelowIndex_ = -1;
-	   }
-	 
-       }   
-}
+
+     while(searchA >= searchB && found == false)
+     {
+	  blockAngle = level_[searchA]->getAngle();
+	  
+	  // Z begin and end coordinates on the top of the block
+	  blockZbegin = level_[searchA]->getCoord()[2] + ((sqrt(2)/2) * cos((45-blockAngle)*(M_PI/180)));
+	  blockZend = blockZbegin - cos(blockAngle*(M_PI/180));
+	  
+	  
+	  // Check if the ship is above the block
+	  if( (xyz_[2] <= blockZbegin) && (xyz_[2] >= blockZend) )
+	  {
+	       if( ((level_[searchA]->getCoord()[0] - xyz_[0]) <= 0.5) && 
+		   ((level_[searchA]->getCoord()[0] - xyz_[0]) >= -0.5) )
+	       {
+		    found = true;
+		    blockBelowIndex_ = searchA;
+		    angle_ = level_[searchA]->getAngle();
+		    blockBelowType_ = level_[searchA]->getType();
+	       }
+	       else
+	       {
+		    searchA--;
+	       }
+	  }
+	  else
+	  {
+	       searchA--;
+	  }
+     }	 
+     
+     // Reset data if we didn't find a block
+     if(found == false)
+     {
+	  angle_ = 0;
+	  yDistance_ = 0;
+	  blockBelowType_ = 1;
+	  blockBelowIndex_ = -1;
+     }
+
+     
+}   
 
 GLdouble Collision::getyDistance()
 {
@@ -200,7 +207,7 @@ void Collision::setYdistance()
       traveledDistance = (-xyz_[2] + beginCoord[1]) / diffZ;
       
       // Calc. the distance from block to ship
-      yDistance_ = xyz_[1] - (beginCoord[0] + (diffY * traveledDistance));  
+      yDistance_ = xyz_[1] - (beginCoord[0] + (diffY * traveledDistance)); 
     }
   else
     {
