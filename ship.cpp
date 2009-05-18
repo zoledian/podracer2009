@@ -51,13 +51,19 @@ Ship::Ship(Camera* cam)
 
 }
 
-void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
+void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 {
   printHighscore();
 
   glMatrixMode(GL_MODELVIEW);
 
   /* First: Change internal variables, do not rotate or translate yet */
+
+  if (blockType == 3)
+    {
+    _currentSpeed = _currentSpeed + _currentSpeed/30;
+    cout << _currentSpeed << endl;
+    }
 
   // Adjust ship X angle to block angle
   if (_shipAngleX > blockAngle)
@@ -104,12 +110,17 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
 	{
 	  _currentSpeed = _currentSpeed + 0.001;
 	}
+      else if (_currentSpeed > velocity)
+	{
+	  _currentSpeed = _currentSpeed - 0.001;
+	}
 
       // Move forward
       // _location[2] = _location[2] - _currentSpeed; OLD
       _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
 
       _location[2] = _location[2] - _currentSpeed; // Speed is constant
+
       //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
     }
 
@@ -187,11 +198,6 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       if (_jumpAngleX < 0)
 	_jumpAngleX += 2;
     }
-  /*
-  cout << "Ship y: " << _location[1] << endl;
-  cout << "blockDistance: " << blockDistance << endl;
-  cout << "Here we die: " << hereWeDie << endl;
-  */
 
   // Are we dead?
   if ( (blockDistance < -0.10))
@@ -211,43 +217,6 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
     _location[1] += 0.10;
 
 }
-
-/* Old gravity
-void Ship::gravity(GLdouble yDistance)
-{
-  _falling = false;
-
-  if (yDistance < 0.05 && yDistance > -0.05)
-    yDistance = 0.0;
-
-  if (yDistance != 0.0)
-    hereWeDie = yDistance - 20.0;
-
-  if (yDistance < 0.7
-      && yDistance > 0.1)
-    {
-    _location[1] = _location[1] + 0.06;
-    }
-  else if ((yDistance > 1.3) && (!_jumping))
-    {
-      _location[1] = _location[1] - 0.10;
-      _falling = true;
-    }
-  else if ((yDistance == 0.0) && (!_jumping))
-    {
-      _location[1] = _location[1] - 0.10;
-      _falling = true;
-    }
-  
-  if ((yDistance < 0.0) 
-      || (_location[1] < hereWeDie))
-    {
-    
-      _camera->slowZ = true;
-      new (this)Ship(_camera);
-
-    }
-} END OF OLD GRAVITY */
 
 void Ship::jump()
 {
@@ -306,58 +275,6 @@ void Ship::jump()
       _location[1] -= 0.10;
     } 
 }
-
-  /* OLD JUMP
-void Ship::jump()
-{
-  GLint jumpAngleMax = 25;
-
-  // Calculate the distance we have left in our jump
-  GLfloat distanceLeft = _location[2] - _jumpDestinationZ;
-
-  // Make floats behave!
-  if (distanceLeft < 0.01)
-    distanceLeft = 0.000;
-  
-  // Adjust X-axis angle, (jumpAngleX)
-  // & Ship's y location    (_location[1])
-  if ( (distanceLeft > (0.75*jumpLength*_currentSpeed)))
-    {
-      _location[1] = _location[1] + 0.06;
-
-      if (_jumpAngleX < jumpAngleMax)
-	_jumpAngleX += 1;
-    }
-  else if ( (distanceLeft > ( 0.50*jumpLength*_currentSpeed ))
-	    && (distanceLeft <= ( 0.75*jumpLength*_currentSpeed )))
-    {
-      _location[1] = _location[1] + 0.04;
-
-      if (_jumpAngleX < jumpAngleMax)
-	_jumpAngleX += 1;
-    }
-  else if ( (distanceLeft > (0.25*jumpLength*_currentSpeed))
-	    && (distanceLeft <= (0.50*jumpLength*_currentSpeed)))
-    {
-      _location[1] = _location[1] - 0.04;
-    }
-    else if ( (distanceLeft > 0.00 )
-	      && ( distanceLeft <= (0.25*jumpLength*_currentSpeed) ))
-    {
-      if (_jumpAngleX > 0)
-	_jumpAngleX -= 1;
-
-      _location[1] = _location[1] - 0.06;
-    }
-    
-    // Are we done with our jump?
-    if (distanceLeft == 0.0 || distanceLeft < 0.0)
-      {
-	_jumping = false;
-	_jumpAngleX = 0;
-      } 
-}
-  */
 
 void Ship::turn()
 {
