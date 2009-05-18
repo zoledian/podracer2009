@@ -63,7 +63,7 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
     _shipAngleX += 0.5;
  
   // "Gravity"
-  gravity(blockDistance);
+  gravity(blockDistance, blockAngle);
 
   // Jump
   if(_jumping)
@@ -105,7 +105,14 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
       // Move forward
       // _location[2] = _location[2] - _currentSpeed; OLD
       _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
-      _location[2] = _location[2] - _currentSpeed; //- (currentSpeed*cos(angle*(M_PI/180)));
+
+      if (blockDistance < 0.5)
+      	_location[1] += 0.01;
+      else if (blockDistance > 0.5)
+	_location[1] -= 0.01;
+
+      _location[2] = _location[2] - _currentSpeed; // Speed is constant
+      //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
     }
 
 }
@@ -138,7 +145,7 @@ GLdouble* Ship::getPosition()
 {
   _locationOfFront[0] = _location[0];
   _locationOfFront[1] = _location[1];
-  _locationOfFront[2] = _location[2] - 0.5;
+  _locationOfFront[2] = _location[2];// - 0.5;
 
   return _locationOfFront;
 }
@@ -147,7 +154,7 @@ GLdouble* Ship::getPosition()
  ** INTERNAL FUNCTIONS
  */
 
-void Ship::gravity(GLdouble yDistance)
+void Ship::gravity(GLdouble yDistance, GLdouble blockAngle)
 {
   _falling = false;
 
@@ -156,20 +163,19 @@ void Ship::gravity(GLdouble yDistance)
     hereWeDie = yDistance - 20.0;
 
   // Are we falling down?
-  if (((yDistance >= 0.6) || (yDistance == 0)) && (!_jumping))
+  if (((yDistance >= 0.6) || (yDistance == 0)) 
+      && (!_jumping) 
+      && (blockAngle == 0))
     {
       _location[1] = _location[1] - 0.10;
       _falling = true;
     }
 
-  cout << yDistance;
-
   // Are we dead?
   if ( (yDistance < 0.0))
     {
-      cout << " yDistance negative!";
-      //_camera->slowZ = true;
-      //new (this)Ship(_camera);
+      _camera->slowZ = true;
+      new (this)Ship(_camera);
     }
   else if (_location[1] < hereWeDie)
     {
@@ -177,8 +183,7 @@ void Ship::gravity(GLdouble yDistance)
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
-  cout << endl;
-  
+
 }
 
 /* Old gravity
