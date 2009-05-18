@@ -14,7 +14,7 @@ class Ship {
   GLdouble* getPosition();
 
  private:
-  void gravity(GLdouble yDistance);
+  void gravity(GLdouble yDistance, GLdouble blockAngle);
 
   void jump();
 
