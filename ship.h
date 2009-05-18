@@ -71,6 +71,8 @@ class Ship {
   GLuint textureId;
 
   GLdouble hereWeDie; // FIXME
+
+  GLdouble _yDistance; // FIXME
 };
 
 #endif
