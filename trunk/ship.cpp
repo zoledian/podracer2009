@@ -46,6 +46,9 @@ Ship::Ship(Camera* cam)
   textureId = loadTexture("./textures/ship3.jpg");
 
   hereWeDie = -10.0;
+
+  _jumpOrigin = 0.0;
+
 }
 
 void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
@@ -131,7 +134,9 @@ void Ship::jumpShip()
     }
   else if (_jumping == false && _falling == false)
     {
+      _jumpOrigin = _location[2];
       _jumpDestinationZ = _location[2] - (jumpLength * _currentSpeed);
+      _jumpDestinationZ = (jumpLength * _currentSpeed);
       _jumping = true;
     }
 }
@@ -178,14 +183,15 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
   */
 
   // Are we dead?
-  if ( (blockDistance < -0.1))
+  if ( (blockDistance < 0.0))
     {
-      cout << "blockDistance " << blockDistance << endl;
+      cout << "You died because: blockDistance = " << blockDistance << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
   else if (_location[1] < hereWeDie)
     {
+      cout << "You died because: You fell down." << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
@@ -229,6 +235,63 @@ void Ship::gravity(GLdouble yDistance)
     }
 } END OF OLD GRAVITY */
 
+void Ship::jump()
+{
+  GLint jumpAngleMax = 30;
+
+  // Calculate the relative distance we have left in our jump
+  GLdouble distanceFactor = fabs((_location[2] - _jumpOrigin) / _jumpDestinationZ);
+  GLdouble jumpHeight;
+
+  if (distanceFactor <= 0.500)
+    {
+      //jumpHeight = _currentSpeed - (_currentSpeed * sin(distanceFactor * M_PI));
+      jumpHeight = (0.10 - (_currentSpeed * sin(distanceFactor * M_PI)))/2;
+      _location[1] = _location[1] + jumpHeight;
+
+      if (_jumpAngleX < jumpAngleMax)
+	_jumpAngleX += 3;
+
+    }
+  else if ((distanceFactor <= 0.999)
+	   && (distanceFactor > 0.500))
+    {
+      jumpHeight = (_currentSpeed * (1 - sin(distanceFactor * M_PI)))*1.95;
+
+      _location[1] = _location[1] - jumpHeight;
+
+      if ((_jumpAngleX > 0)
+	  && (distanceFactor < 0.800))
+	{
+	_jumpAngleX -= 1;
+	}
+      /*
+      else if ((_jumpAngleX > (-jumpAngleMax))
+	  && (distanceFactor >= 0.800)
+	  && (distanceFactor < 0.900))
+	{
+	  _jumpAngleX -= 1;
+	}
+      else if ((_jumpAngleX < 0)
+	       && (distanceFactor >= 0.900))
+	{
+	  _jumpAngleX += 1;
+	  if(_jumpAngleX > 0)
+	    _jumpAngleX = 0;
+
+	  cout << _jumpAngleX << endl;
+	}
+      */
+
+    }
+  else
+    {
+      _jumping = false;
+      _jumpAngleX = 0;
+    } 
+}
+
+  /* OLD JUMP
 void Ship::jump()
 {
   GLint jumpAngleMax = 25;
@@ -278,6 +341,7 @@ void Ship::jump()
 	_jumpAngleX = 0;
       } 
 }
+  */
 
 void Ship::turn()
 {
