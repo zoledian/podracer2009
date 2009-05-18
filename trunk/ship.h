@@ -8,7 +8,7 @@
 class Ship {
  public:
   Ship(Camera* cam);
-  void drawShip(GLdouble yDistance, GLdouble angle);
+  void drawShip(GLdouble yDistance, GLdouble angle, int blockType);
   void moveHere(GLint cubeNr);
   void jumpShip();
   GLdouble* getPosition();

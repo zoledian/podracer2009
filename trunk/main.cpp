@@ -83,7 +83,9 @@ void display()
   collision->setShipxyz(Spaceship->getPosition());
   collision->findBlockBelow();
 
-  Spaceship->drawShip(collision->getyDistance(), collision->getAngle());
+  Spaceship->drawShip(collision->getyDistance(), 
+		      collision->getAngle(),
+		      collision->getBlockBelowType());
   
   //Cam->LookAtThis(0.0,0.0,0.0);
 
