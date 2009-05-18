@@ -100,7 +100,7 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
   /* Change variables so next time we move forward (and accelerate) */
   if (_moving)
     {  
-      if (_currentSpeed <= velocity)
+      if (_currentSpeed < velocity)
 	{
 	  _currentSpeed = _currentSpeed + 0.001;
 	}
@@ -163,7 +163,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
     hereWeDie = blockDistance - 20.0;
 
   // Are we falling down?
-  if (((blockDistance >= 0.6) || (blockDistance == 0)) 
+  if (((blockDistance >= 0.7) || (blockDistance == 0)) 
       && (!_jumping) 
       && (blockAngle == 0))
     {
@@ -173,7 +173,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
   else if (blockDistance < 0.5)
     _location[1] += 0.01;
   else if ((blockDistance) > 0.5 
-	   && (blockDistance < 0.6)
+	   && (blockDistance < 0.7)
 	   && (!_jumping))
     _location[1] -= 0.01;
   /*
@@ -256,16 +256,17 @@ void Ship::jump()
   else if ((distanceFactor <= 0.999)
 	   && (distanceFactor > 0.500))
     {
-      jumpHeight = (_currentSpeed * (1 - sin(distanceFactor * M_PI)))*1.95;
+      jumpHeight = (_currentSpeed * (1 - sin(distanceFactor * M_PI)))*1.8;
 
       _location[1] = _location[1] - jumpHeight;
 
       if ((_jumpAngleX > 0)
-	  && (distanceFactor < 0.800))
+	  && (distanceFactor > 0.800))	  
 	{
-	_jumpAngleX -= 1;
+	_jumpAngleX -= 2;
 	}
-      /*
+
+     /*
       else if ((_jumpAngleX > (-jumpAngleMax))
 	  && (distanceFactor >= 0.800)
 	  && (distanceFactor < 0.900))
@@ -288,6 +289,7 @@ void Ship::jump()
     {
       _jumping = false;
       _jumpAngleX = 0;
+      _location[1] -= 0.10;
     } 
 }
 
