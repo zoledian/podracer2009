@@ -75,6 +75,7 @@ class Ship {
   GLdouble hereWeDie; // FIXME
 
   GLdouble _jumpOrigin;
+  GLdouble _jumpLengthOriginal;
 };
 
 #endif
