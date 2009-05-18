@@ -41,6 +41,7 @@ class Ship {
   /* Helper variables */
   // Ship specific
   GLdouble _location[3];
+  GLdouble _locationOfFront[3];
   GLint _cubeNr; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
   GLdouble _shipAngleX;
 

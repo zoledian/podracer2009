@@ -25,6 +25,9 @@ Ship::Ship(Camera* cam)
    ** Helper variables
    **/
   _location[0] =  _location[1] = _location[2] = 0.0;
+  _locationOfFront[0] =  _locationOfFront[1] = 0.0;
+  _locationOfFront[2] = -0.5;
+
   _jumpDestinationZ = 0.0;
   _wiggleX = _shipAngleX = 0.0;
 
@@ -55,12 +58,10 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
 
   // Adjust ship X angle to block angle
   if (_shipAngleX > blockAngle)
-    _shipAngleX--;
+    _shipAngleX -= 0.5;
   else if (_shipAngleX < blockAngle)
-    _shipAngleX++;
-  else
-    _shipAngleX = blockAngle;
-
+    _shipAngleX += 0.5;
+ 
   // "Gravity"
   gravity(blockDistance);
 
@@ -135,7 +136,11 @@ void Ship::jumpShip()
 
 GLdouble* Ship::getPosition()
 {
-  return _location;
+  _locationOfFront[0] = _location[0];
+  _locationOfFront[1] = _location[1];
+  _locationOfFront[2] = _location[2] - 0.5;
+
+  return _locationOfFront;
 }
 
 /**
@@ -157,12 +162,22 @@ void Ship::gravity(GLdouble yDistance)
       _falling = true;
     }
 
-  // Are we dead? FIXME uncomment below
-  if (/* (yDistance < 0.0) ||*/ (_location[1] < hereWeDie))
+  cout << yDistance;
+
+  // Are we dead?
+  if ( (yDistance < 0.0))
     {
+      cout << " yDistance negative!";
+      //_camera->slowZ = true;
+      //new (this)Ship(_camera);
+    }
+  else if (_location[1] < hereWeDie)
+    {
+      cout << "Location < herewedie!" << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
+  cout << endl;
   
 }
 
