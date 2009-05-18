@@ -169,13 +169,23 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
     {
       _location[1] = _location[1] - 0.10;
       _falling = true;
+      if (_jumpAngleX > -50)
+	_jumpAngleX--;
     }
   else if (blockDistance < 0.5)
-    _location[1] += 0.01;
+    {
+      _location[1] += 0.01;
+      if ((_jumpAngleX < 0) && !_jumping)
+	_jumpAngleX += 2;
+    }
   else if ((blockDistance) > 0.5 
 	   && (blockDistance < 0.7)
 	   && (!_jumping))
-    _location[1] -= 0.01;
+    {
+      _location[1] -= 0.01;
+      if (_jumpAngleX < 0)
+	_jumpAngleX += 2;
+    }
   /*
   cout << "Ship y: " << _location[1] << endl;
   cout << "blockDistance: " << blockDistance << endl;
