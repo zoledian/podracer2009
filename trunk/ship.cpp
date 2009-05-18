@@ -25,16 +25,16 @@ Ship::Ship(Camera* cam)
    ** Helper variables
    **/
   _location[0] =  _location[1] = _location[2] = 0.0;
-  jumpDestination = jumpHeight = 0.0;
-  _wiggleX = _angle = 0.0;
+  _jumpDestinationZ = 0.0;
+  _wiggleX = _shipAngleX = 0.0;
 
   _moving = _turning = _jumping = _wiggle = _wiggleToRight
     = _falling = false;
 
-  _cubeNr = _wiggleCounter = _turnAngle = _hoverY = angleX = _hoverCounter 
+  _cubeNr = _wiggleCounter = _turnAngle = _hoverY = _jumpAngleX = _hoverCounter 
     = _wiggleAngle = 0;
 
-  currentSpeed = 0.001;
+  _currentSpeed = 0.001;
 
   _camera = cam;
   _camera->LookAtThis(0.0,0.0,-100.0);
@@ -45,26 +45,28 @@ Ship::Ship(Camera* cam)
   hereWeDie = -10.0;
 }
 
-void Ship::drawShip(GLdouble yDistance, GLdouble angle)
+void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
 {
   printHighscore();
 
   glMatrixMode(GL_MODELVIEW);
 
-  // "Gravity"
-  gravity(yDistance, angle);
+  /* First: Change internal variables, do not rotate or translate yet */
 
-  // Translate
-  glTranslatef(_location[0]+_wiggleX,
-	       _location[1]+_hoverY,
-	       _location[2]);
+  // Adjust ship X angle to block angle
+  if (_shipAngleX > blockAngle)
+    _shipAngleX--;
+  else if (_shipAngleX < blockAngle)
+    _shipAngleX++;
+  else
+    _shipAngleX = blockAngle;
+
+  // "Gravity"
+  gravity(blockDistance);
 
   // Jump
   if(_jumping)
     jump();
-
-  // Compensate for block angle
-  glRotatef(_angle, 10.0, 0.0, 0.0);
 
   // Turn, wiggle or hover
   if(_turning)
@@ -74,24 +76,35 @@ void Ship::drawShip(GLdouble yDistance, GLdouble angle)
   else
     hover();
 
-  // Draw ship
+  /* Translate */
+  glTranslatef(_location[0]+_wiggleX,
+	       _location[1]+_hoverY,
+	       _location[2]);
+
+  /* ALL rotations */
+  glRotatef((_shipAngleX+_jumpAngleX), 10.0, 0.0, 0.0);
+  glRotatef(_turnAngle, 0.0, 0.0, -10.0);
+  glRotatef((_turnAngle + _wiggleAngle), 0.0, -10.0, 0.0);
+
+  /* Draw ship */
   drawBody();
   drawWindshield();
 
-  // Point camera on ship
+  /* Point camera on ship */
   _camera->LookAtThis(_location[0],_location[1],_location[2]);
 
-  // Move forward next time & accelerate
+  /* Change variables so next time we move forward (and accelerate) */
   if (_moving)
     {  
-      if (currentSpeed <= velocity)
+      if (_currentSpeed <= velocity)
 	{
-	  currentSpeed = currentSpeed + 0.001;
+	  _currentSpeed = _currentSpeed + 0.001;
 	}
-      
-      _location[2] = _location[2] - currentSpeed;
 
-      //printDebug();
+      // Move forward
+      // _location[2] = _location[2] - _currentSpeed; OLD
+      _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
+      _location[2] = _location[2] - _currentSpeed; //- (currentSpeed*cos(angle*(M_PI/180)));
     }
 
 }
@@ -115,7 +128,7 @@ void Ship::jumpShip()
     }
   else if (_jumping == false && _falling == false)
     {
-      jumpDestination = _location[2] - (jumpLength * currentSpeed);
+      _jumpDestinationZ = _location[2] - (jumpLength * _currentSpeed);
       _jumping = true;
     }
 }
@@ -125,9 +138,124 @@ GLdouble* Ship::getPosition()
   return _location;
 }
 
+/**
+ ** INTERNAL FUNCTIONS
+ */
+
+void Ship::gravity(GLdouble yDistance)
+{
+  _falling = false;
+
+  // Update die variable
+  if (yDistance != 0.0)
+    hereWeDie = yDistance - 20.0;
+
+  // Are we falling down?
+  if (((yDistance >= 0.6) || (yDistance == 0)) && (!_jumping))
+    {
+      _location[1] = _location[1] - 0.10;
+      _falling = true;
+    }
+
+  // Are we dead? FIXME uncomment below
+  if (/* (yDistance < 0.0) ||*/ (_location[1] < hereWeDie))
+    {
+      _camera->slowZ = true;
+      new (this)Ship(_camera);
+    }
+  
+}
+
+/* Old gravity
+void Ship::gravity(GLdouble yDistance)
+{
+  _falling = false;
+
+  if (yDistance < 0.05 && yDistance > -0.05)
+    yDistance = 0.0;
+
+  if (yDistance != 0.0)
+    hereWeDie = yDistance - 20.0;
+
+  if (yDistance < 0.7
+      && yDistance > 0.1)
+    {
+    _location[1] = _location[1] + 0.06;
+    }
+  else if ((yDistance > 1.3) && (!_jumping))
+    {
+      _location[1] = _location[1] - 0.10;
+      _falling = true;
+    }
+  else if ((yDistance == 0.0) && (!_jumping))
+    {
+      _location[1] = _location[1] - 0.10;
+      _falling = true;
+    }
+  
+  if ((yDistance < 0.0) 
+      || (_location[1] < hereWeDie))
+    {
+    
+      _camera->slowZ = true;
+      new (this)Ship(_camera);
+
+    }
+} END OF OLD GRAVITY */
+
+void Ship::jump()
+{
+  GLint jumpAngleMax = 25;
+
+  // Calculate the distance we have left in our jump
+  GLfloat distanceLeft = _location[2] - _jumpDestinationZ;
+
+  // Make floats behave!
+  if (distanceLeft < 0.01)
+    distanceLeft = 0.000;
+  
+  // Adjust X-axis angle, (jumpAngleX)
+  // & Ship's y location    (_location[1])
+  if ( (distanceLeft > (0.75*jumpLength*_currentSpeed)))
+    {
+      _location[1] = _location[1] + 0.06;
+
+      if (_jumpAngleX < jumpAngleMax)
+	_jumpAngleX += 1;
+    }
+  else if ( (distanceLeft > ( 0.50*jumpLength*_currentSpeed ))
+	    && (distanceLeft <= ( 0.75*jumpLength*_currentSpeed )))
+    {
+      _location[1] = _location[1] + 0.04;
+
+      if (_jumpAngleX < jumpAngleMax)
+	_jumpAngleX += 1;
+    }
+  else if ( (distanceLeft > (0.25*jumpLength*_currentSpeed))
+	    && (distanceLeft <= (0.50*jumpLength*_currentSpeed)))
+    {
+      _location[1] = _location[1] - 0.04;
+    }
+    else if ( (distanceLeft > 0.00 )
+	      && ( distanceLeft <= (0.25*jumpLength*_currentSpeed) ))
+    {
+      if (_jumpAngleX > 0)
+	_jumpAngleX -= 1;
+
+      _location[1] = _location[1] - 0.06;
+    }
+    
+    // Are we done with our jump?
+    if (distanceLeft == 0.0 || distanceLeft < 0.0)
+      {
+	_jumping = false;
+	_jumpAngleX = 0;
+      } 
+}
+
 void Ship::turn()
 {
-  // Distance we have left
+  // Calculate distance we have left in our turn
   GLfloat distanceLeft = _location[0] - _cubeNr;
 
   // Are we moving left or right?
@@ -141,7 +269,7 @@ void Ship::turn()
   // Rotate when moving
   turnRotateZ(movingLeft, distanceLeft);
 
-  // Move by the x axis a bit
+  // Move by the x axis towards our destination
   if(movingLeft)
     { _location[0] = _location[0]-turnSpeed; }
   else
@@ -169,42 +297,42 @@ void Ship::turnRotateZ(GLboolean movingLeft, GLdouble distanceLeft)
 {
   if ( !movingLeft )
     {
+      // We are moving right
       if ( (distanceLeft < 0.5) && (_turnAngle > 0) )
 	{
-	  // We are moving right and are close to our destination
+	  // We are close to our destination
 	  _turnAngle--;
 	}
       else if (_turnAngle < 30)
 	{
-	  // We are moving right and are far away from our destination
+	  // We are far away from our destination
 	  _turnAngle++;
 	}
     }
   else if (movingLeft)
     {
+      // We are moving left
       if ( (distanceLeft < 0.5) && (_turnAngle < 0) )
 	{
-	  // We are moving left and are close to our destination
+	  // We are close to our destination
 	  _turnAngle++;
 	}
       else if (_turnAngle > -30)
 	{
-	  // We are moving left and are far away from our destination
+	  // We are far away from our destination
 	  _turnAngle--;
 	}
     }
-
-  glRotatef(_turnAngle, 0.0, 0.0, -10.0);
-  glRotatef(_turnAngle, 0.0, -10.0, 0.0);
 }
 
 void Ship::wiggle()
 {
   _wiggleCounter++;
-  GLint turnLength = 10;
-  GLint turnBack = turnLength*2;
 
-  if (_wiggleCounter < turnLength)
+  GLint wiggleLength = 10;
+  GLint wiggleBack = wiggleLength*2;
+
+  if (_wiggleCounter < wiggleLength)
     {
       if (_wiggleToRight)
 	{
@@ -217,8 +345,8 @@ void Ship::wiggle()
 	  _wiggleX = _wiggleX + 0.001;
 	}
     }
-  else if ( (_wiggleCounter >= turnLength )
-	    && (_wiggleCounter < turnBack) )
+  else if ( (_wiggleCounter >= wiggleLength )
+	    && (_wiggleCounter < wiggleBack) )
     {
       if (_wiggleToRight)
 	{
@@ -238,20 +366,19 @@ void Ship::wiggle()
       _wiggle = false;
       _wiggleCounter = 0;
     }
-  
-  glRotatef(_wiggleAngle, 0.0, -10.0, 0.0);
+ 
 }
 
 void Ship::hover()
 {
   if (_hoverCounter < 100)
     {
-      _hoverY = _hoverY+hoverHeight;
+      _hoverY = _hoverY + hoverHeight;
       _hoverCounter++;
     }
   else if ( (_hoverCounter >= 100) && (_hoverCounter < 200) )
     {
-      _hoverY = _hoverY-hoverHeight;
+      _hoverY = _hoverY - hoverHeight;
       _hoverCounter++;
     }
   else
@@ -259,72 +386,7 @@ void Ship::hover()
       _hoverCounter = 0;
       _hoverY = 0;
     }
-
 }
-
-void Ship::jump()
-{
-  GLint maxAngle = 25;
-
-  // Distance we have left
-  GLfloat distanceLeft = _location[2] - jumpDestination;
-
-  // Make floats behave!
-  if (distanceLeft < 0.01)
-    distanceLeft = 0.000;
-  
-  // Adjust X-axis angle
-  if ( (distanceLeft > (0.75*jumpLength*currentSpeed)))
-    {
-      jumpHeight = jumpHeight + 0.06;
-      _location[1] = _location[1] + 0.06;
-
-      if (angleX < maxAngle)
-	angleX += 1;
-    }
-  else if ( (distanceLeft > ( 0.50*jumpLength*currentSpeed ))
-	    && (distanceLeft <= ( 0.75*jumpLength*currentSpeed )))
-    {
-      jumpHeight = jumpHeight + 0.04;
-      _location[1] = _location[1] + 0.04;
-      if (angleX < maxAngle)
-	angleX += 1;
-    }
-  else if ( (distanceLeft > (0.25*jumpLength*currentSpeed))
-	    && (distanceLeft <= (0.50*jumpLength*currentSpeed)))
-    {
-      jumpHeight = jumpHeight - 0.04;
-      _location[1] = _location[1] - 0.04;
-      /*
-      if (angleX > 0)
-	angleX -= 1;
-      */
-    }
-    else if ( (distanceLeft > 0.00 )
-	      && ( distanceLeft <= (0.25*jumpLength*currentSpeed) ))
-    {
-      if (angleX > 0)
-	angleX -= 1;
-      jumpHeight = jumpHeight - 0.06;
-      _location[1] = _location[1] - 0.06;
-    }
-    
-    // Are we done with our jump?
-    if (distanceLeft == 0.0 || distanceLeft < 0.0)
-      {
-	_jumping = false;
-	jumpHeight = 0.0;
-	angleX = 0;
-      }
-    
-    // Rotate
-    glRotatef(angleX, 10.0, 0.0, 0.0);
-    
-    // Jump
-    //glTranslatef(0.0,jumpHeight,0.0);
-  
-}
-
 
 void Ship::drawBody()
 {
@@ -332,27 +394,25 @@ void Ship::drawBody()
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
   // Scale
-  glScalef(0.7,0.3,1.0); //Size of cuboid
+  glScalef(0.7,0.3,1.0); //Size of squashed sphere
 
+  // Texture stuff
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, textureId);
-
- 
   glEnable(GL_TEXTURE_GEN_S);
   glEnable(GL_TEXTURE_GEN_T);
   glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
   glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
- 
   glEnable(GL_TEXTURE_GEN_R);
 
-  /* Draw Cuboid "body" */
+  // Draw Cuboid "body"
   glColor3f(0.5,0,0);
-  //glutSolidCube(1);
   glutSolidSphere (0.6, // radius
 		   20, // slices
 		   20 // stacks
 		   );
 
+  // Disable texture stuff
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_TEXTURE_GEN_S);
   glDisable(GL_TEXTURE_GEN_T);
@@ -366,8 +426,7 @@ void Ship::drawWindshield()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
-
-  /* Draw Sphere "windshield" */
+  // Draw Sphere "windshield"
   glColor3f(1,1,1);
   glTranslatef(0.0,0.0,-0.25);
   glutSolidSphere(0.27, // Radius
@@ -375,68 +434,14 @@ void Ship::drawWindshield()
 		  10  // stacks
 		  );
   
-
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
 
 }
 
-void Ship::gravity(GLdouble yDistance, GLdouble angle)
-{
-  _falling = false;
-
-  if (yDistance < 0.05 && yDistance > -0.05)
-    yDistance = 0.0;
-
-  if (yDistance != 0.0)
-    hereWeDie = yDistance - 20.0;
-
-  // Compensate for block y distance
-  if (yDistance < 0.7
-      && yDistance > 0.1)
-    {
-      _location[1] = _location[1] + 0.06;
-    }
-  else if ((yDistance > 1.3) && (!_jumping))
-    {
-      _location[1] = _location[1] - 0.10;
-      _falling = true;
-    }
-  else if ((yDistance == 0.0) && (!_jumping))
-    {
-      _location[1] = _location[1] - 0.10;
-      _falling = true;
-    }
-  
-  if ((yDistance < 0.0) 
-      || (_location[1] < hereWeDie))
-    {
-      // We are dead
-      _camera->slowZ = true;
-      new (this)Ship(_camera);
-    }
-  
-  // Compensate for block angle
-  if (angle > _angle)
-    _angle++;
-  else if (angle < _angle)
-    _angle--;
-  else
-    _angle = angle;
-  
-
-}
-
-void Ship::printDebug()
-{
-  cout << "jumping? " << _jumping << endl;
-  cout << "turning? " << _turning << endl;
-  cout << "turning end? " << _wiggle << endl;
-}
-
 void Ship::printHighscore()
 {
-  glMatrixMode(GL_PROJECTION);
+  //glMatrixMode(GL_PROJECTION);
   //glMatrixMode(GL_MODELVIEW);
 
   glPushMatrix(); // Save matrix
@@ -475,7 +480,8 @@ GLuint Ship::loadTexture(char* name)
     {
       read_JPEG_file(name, &pixelData, &width, &height);
     }
-  /*
+  /* We dont need PPM, less things to worry about
+
   else if (nameLen >= 4 && (!strcmp(name + nameLen - 4, ".ppm")
 			    || !strcmp(name + nameLen - 4, ".PPM")))
     {

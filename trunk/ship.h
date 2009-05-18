@@ -14,18 +14,21 @@ class Ship {
   GLdouble* getPosition();
 
  private:
+  void gravity(GLdouble yDistance);
+
+  void jump();
+
   void turn();
   void turnRotateZ(GLboolean movingLeft, GLdouble distanceLeft);
+
   void wiggle();
+
   void hover();
-  void jump();
-  void gravity(GLdouble yDistance, GLdouble angle);
-  void printHighscore();
 
   void drawBody();
   void drawWindshield();
 
-  void printDebug();
+  void printHighscore();
 
   GLuint loadTexture(char* name);
 
@@ -39,7 +42,7 @@ class Ship {
   // Ship specific
   GLdouble _location[3];
   GLint _cubeNr; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
-  GLdouble _angle;
+  GLdouble _shipAngleX;
 
   // States
   GLboolean _moving;
@@ -50,21 +53,19 @@ class Ship {
 
   // Misc
   GLboolean _wiggleToRight;
+  GLint _wiggleAngle;
+  GLdouble _wiggleX;
+  GLint _wiggleCounter;
 
   GLdouble _hoverY;
   GLint _hoverCounter;
 
   GLint _turnAngle;
-  GLint _wiggleAngle;
-  GLdouble _wiggleX;
-  GLint _wiggleCounter;
 
-  GLint angleX;
+  GLint _jumpAngleX;
+  GLdouble _jumpDestinationZ;
 
-  GLdouble jumpDestination;
-  GLdouble jumpHeight;
-
-  GLdouble currentSpeed;
+  GLdouble _currentSpeed;
 
   Camera* _camera;
 
