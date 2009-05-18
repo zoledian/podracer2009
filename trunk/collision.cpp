@@ -150,7 +150,7 @@ void Collision::findBlockBelow()
 	 if(found == true)
 	   {
 	     angle_ = level_[searchA]->getAngle();
-	     setYdistance();
+	     //setYdistance();
 	     blockBelowType_ = level_[searchA]->getType();
 	   }
 	 else
@@ -200,7 +200,8 @@ void Collision::setYdistance()
       traveledDistance = (-xyz_[2] + beginCoord[1]) / diffZ;
       
       // Calc. the distance from block to ship
-      yDistance_ = xyz_[1] - (beginCoord[0] + (diffY * traveledDistance));            
+      yDistance_ = xyz_[1] - (beginCoord[0] + (diffY * traveledDistance));  
+      cout << " CubeY: " << (beginCoord[0] + (diffY * traveledDistance)) << endl;
     }
   else
     {
