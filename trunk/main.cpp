@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 
   Cam = new Camera();
   Spaceship = new Ship(Cam);
-  loadLevel = new LoadLevel("level.dat"); // Testlevel
+  loadLevel = new LoadLevel("level1.dat"); // Testlevel
   skyBox = new SkyBox(); // Skybox
   collision = new Collision();
   
