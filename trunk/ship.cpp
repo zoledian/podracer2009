@@ -106,11 +106,6 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle)
       // _location[2] = _location[2] - _currentSpeed; OLD
       _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
 
-      if (blockDistance < 0.5)
-      	_location[1] += 0.01;
-      else if (blockDistance > 0.5)
-	_location[1] -= 0.01;
-
       _location[2] = _location[2] - _currentSpeed; // Speed is constant
       //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
     }
@@ -154,32 +149,43 @@ GLdouble* Ship::getPosition()
  ** INTERNAL FUNCTIONS
  */
 
-void Ship::gravity(GLdouble yDistance, GLdouble blockAngle)
+void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
 {
   _falling = false;
 
   // Update die variable
-  if (yDistance != 0.0)
-    hereWeDie = yDistance - 20.0;
+  if (blockDistance != 0.0)
+    hereWeDie = blockDistance - 20.0;
 
   // Are we falling down?
-  if (((yDistance >= 0.6) || (yDistance == 0)) 
+  if (((blockDistance >= 0.6) || (blockDistance == 0)) 
       && (!_jumping) 
       && (blockAngle == 0))
     {
       _location[1] = _location[1] - 0.10;
       _falling = true;
     }
+  else if (blockDistance < 0.5)
+    _location[1] += 0.01;
+  else if ((blockDistance) > 0.5 
+	   && (blockDistance < 0.6)
+	   && (!_jumping))
+    _location[1] -= 0.01;
+  /*
+  cout << "Ship y: " << _location[1] << endl;
+  cout << "blockDistance: " << blockDistance << endl;
+  cout << "Here we die: " << hereWeDie << endl;
+  */
 
   // Are we dead?
-  if ( (yDistance < 0.0))
+  if ( (blockDistance < -0.1))
     {
+      cout << "blockDistance " << blockDistance << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
   else if (_location[1] < hereWeDie)
     {
-      cout << "Location < herewedie!" << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
