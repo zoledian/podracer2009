@@ -27,10 +27,28 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
     _location[0] = _location[0] - _speed;
   if (x > (1.05*_location[0]))
     _location[0] = _location[0] + _speed;
-  if (y < (0.90*(_location[1]-5.0)))
+
+  // Make camera y pos lag
+  /*
+  double yTarget = _location[1] - 5;
+  cout << yTarget << "!" << endl;
+  cout << _location[1] << " -> ";
+  if ((y < 0.95*yTarget)
+      && (y > (0.8*yTarget)))
+    _location[1] = _location[1] - 0.2*_speed;
+  else if ((y <= 0.8*yTarget))
     _location[1] = _location[1] - 0.6*_speed;
-  if (y > (1.10*(_location[1]-5.0)))
+  else if ((y > 1.10*yTarget)
+      && (y < (1.2*yTarget)))
+    _location[1] = _location[1] + 0.2*_speed;
+  else if ((y >= 1.2*yTarget))
     _location[1] = _location[1] + 0.6*_speed;
+
+  cout << _location[1] << endl;
+  */
+
+  _location[1] = y + 5;
+
 
   if (slowZ)
     {

@@ -13,7 +13,9 @@ SkyBox::SkyBox()
 
 void SkyBox::drawSkyBox(GLdouble* camPos)
 {
-	// Save states
+  int size = 50;
+
+  // Save states
 	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -43,78 +45,78 @@ void SkyBox::drawSkyBox(GLdouble* camPos)
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,-1);
 	glTexCoord2f(0, 0);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(1, 1);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glEnd();
   
 	// Right side
 	glBegin(GL_POLYGON);
 	glNormal3f(1,0,0);
 	glTexCoord2f(1, 1);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(0, 0);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], size + camPos[2]);
 	glEnd(); 
 
 	// Back side
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,1);
 	glTexCoord2f(1, 1);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 0);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], size + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], size + camPos[2]);
 	glEnd();
 
 	// Left side
 	glBegin(GL_POLYGON);
 	glNormal3f(-1,0,0);
 	glTexCoord2f(1, 1);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 0);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], size + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glEnd(); 
 
 	// Top side
 	glBegin(GL_POLYGON);
 	glNormal3f(0,1,0);
 	glTexCoord2f(0, 1);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(0, 0);
-	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], size + camPos[1], size + camPos[2]);
 	glTexCoord2f(1, 0);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], size + camPos[2]);
 	glTexCoord2f(1, 1);
-	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], size + camPos[1], -size + camPos[2]);
 	glEnd();
 
 	// Bottom side
 	glBegin(GL_POLYGON);
 	glNormal3f(0,-1,0);
 	glTexCoord2f(1, 0);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glTexCoord2f(1, 1);
-	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 1);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], size + camPos[2]);
 	glTexCoord2f(0, 0);
-	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
+	glVertex3f(-size + camPos[0], -size + camPos[1], -size + camPos[2]);
 	glEnd();
 
   	/* Restore states */
