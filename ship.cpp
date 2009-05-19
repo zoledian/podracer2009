@@ -472,7 +472,7 @@ void Ship::drawBody()
  //glTranslatef(0.0,0.1,0.0);
 
   // Scale
-  glScalef(0.6,0.3,1.0); //Size of squashed sphere
+  glScalef(0.5,0.3,1.0); //Size of squashed sphere
 
   glRotatef(180, 0.0, 0.15, 10.0);
 
@@ -500,6 +500,7 @@ void Ship::drawBody()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+  /* Draw right engine */
   glTranslatef(0.25, // a bit to the right
 	       -0.04,
 	       -0.1 // a bit back
@@ -515,6 +516,8 @@ void Ship::drawBody()
 	      12  // stacks
 	      );
   glDisable(GL_TEXTURE_2D);
+
+  /* Draw right engine's fumes */
   glColor3f(_shipFumes,0.5*_shipFumes,0);
   glTranslatef(0.0,
 	       0.0,
@@ -526,6 +529,23 @@ void Ship::drawBody()
 	  12, // slices
 	  12 // rings
 	  );
+  
+  /* Draw right engine's front */
+  //glEnable(GL_TEXTURE_2D);
+  //glBindTexture(GL_TEXTURE_2D, textureId);
+  glRotatef(180, 0, 10, 0.0);
+  glColor3f(0.3,0.3,0.3);
+  glTranslatef(0.0,
+	       0.0,
+	       0.7// back
+	       );
+  gluDisk(_shipEngineBack,
+	  0, // inner radius
+	  0.12, // outer radius
+	  12, // slices
+	  12 // rings
+	  );
+  glDisable(GL_TEXTURE_2D);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -536,6 +556,7 @@ void Ship::drawBody()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+  /* Draw left engine */
   glTranslatef(-0.27, // a bit to the right
 	       -0.04,
 	       -0.1 // a bit back
@@ -550,6 +571,8 @@ void Ship::drawBody()
 	      12, //slices
 	      12  // stacks
 	      );
+
+  /* Draw left engine's fumes */
   glDisable(GL_TEXTURE_2D);
   glColor3f(_shipFumes,0.5*_shipFumes,0);
   glTranslatef(0.0,
@@ -562,6 +585,23 @@ void Ship::drawBody()
 	  12, // slices
 	  12 // rings
 	  );
+
+  /* Draw left engine's front */
+  //glEnable(GL_TEXTURE_2D);
+  //glBindTexture(GL_TEXTURE_2D, textureId);
+  glRotatef(180, 0, 10, 0.0);
+  glColor3f(0.3,0.3,0.3);
+  glTranslatef(0.0,
+	       0.0,
+	       0.7// back
+	       );
+  gluDisk(_shipEngineBack,
+	  0, // inner radius
+	  0.12, // outer radius
+	  12, // slices
+	  12 // rings
+	  );
+  glDisable(GL_TEXTURE_2D);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
