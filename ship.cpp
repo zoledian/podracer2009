@@ -12,6 +12,19 @@ using namespace std;
 Ship::Ship(Camera* cam)
 { 
   /**
+   ** Create parts that will form the ship
+   */
+  _shipBody = gluNewQuadric();
+  gluQuadricDrawStyle(_shipBody, GLU_FILL);
+  gluQuadricNormals(_shipBody, GLU_SMOOTH);
+  gluQuadricTexture(_shipBody, GL_TRUE);
+
+  _shipWindshield = gluNewQuadric();
+  gluQuadricDrawStyle(_shipWindshield, /*GLU_SILHOUETTE*/ GLU_FILL);
+  gluQuadricNormals(_shipWindshield, GLU_SMOOTH);
+  gluQuadricTexture(_shipWindshield, GL_TRUE);
+
+  /**
    ** "Physics" variables
    */
   hoverHeight = 0.0025; // How high/low to hover
@@ -43,7 +56,7 @@ Ship::Ship(Camera* cam)
   _camera->LookAtThis(0.0,0.0,-100.0);
   _camera->slowZ = true;
 
-  textureId = loadTexture("./textures/ship3.jpg");
+  textureId = loadTexture("./textures/ship.jpg");
 
   hereWeDie = -10.0;
 
@@ -422,29 +435,26 @@ void Ship::drawBody()
   // Scale
   glScalef(0.7,0.3,1.0); //Size of squashed sphere
 
-  // Texture stuff
+  // Enable texturing
   glEnable(GL_TEXTURE_2D);
+
+  // Replace colors with that of texture's
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+  // Specify texture to use
   glBindTexture(GL_TEXTURE_2D, textureId);
-  glEnable(GL_TEXTURE_GEN_S);
-  glEnable(GL_TEXTURE_GEN_T);
-  glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-  glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-  glEnable(GL_TEXTURE_GEN_R);
 
-  // Draw Cuboid "body"
-  glColor3f(0.5,0,0);
-  glutSolidSphere (0.6, // radius
-		   20, // slices
-		   20 // stacks
-		   );
+  // Create GLU sphere
+  gluSphere(_shipBody, 0.6, 16, 16);
 
-  // Disable texture stuff
+  // Disable texturing
   glDisable(GL_TEXTURE_2D);
-  glDisable(GL_TEXTURE_GEN_S);
-  glDisable(GL_TEXTURE_GEN_T);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
+
+
+
 }
 
 void Ship::drawWindshield()
@@ -452,13 +462,24 @@ void Ship::drawWindshield()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+  double clip_plane1[]={0.0, 1.0, 0.0, 0};
+  glClipPlane(GL_CLIP_PLANE1,clip_plane1);
+  glEnable(GL_CLIP_PLANE1);
+
   // Draw Sphere "windshield"
-  glColor3f(1,1,1);
+  glColor4f(0,0,0,0.8);
   glTranslatef(0.0,0.0,-0.25);
-  glutSolidSphere(0.27, // Radius
-		  10,  // slices 
-		  10  // stacks
-		  );
+
+  gluSphere(_shipWindshield, 0.27, 16, 16);
+
+  //disable clip plane
+  glDisable(GL_CLIP_PLANE1);
+
+  glDisable(GL_BLEND);
   
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color

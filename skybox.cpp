@@ -1,10 +1,14 @@
 #include <GL/glut.h>
-#include "zpr.h"
+//#include "zpr.h"
 #include "skybox.h"
+#include "stdlib.h"
+#include "readjpeg.h"
+#include <string.h>
 using namespace std;
 
 SkyBox::SkyBox()
 {
+    textureId = loadTexture("./textures/space.jpg");
 }
 
 void SkyBox::drawSkyBox(GLdouble* camPos)
@@ -22,17 +26,23 @@ void SkyBox::drawSkyBox(GLdouble* camPos)
         // Enable Gouraud shading
 	glShadeModel(GL_SMOOTH);
 	
-	// Draw cube
-	//glEnable(GL_TEXTURE_2D);
+
+	// Enable texturing
+	glEnable(GL_TEXTURE_2D);
+
+	// Replace colors with that of texture's
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	// Specify texture to use
+	glBindTexture(GL_TEXTURE_2D, textureId);
 
 	// Front side
 	glFrontFace(GL_CW); 
 
 	glColor3f(0, 0, 0);
-	//glBindTexture(GL_TEXTURE_2D, texturePosZ);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,-1);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glTexCoord2f(1, 0);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
@@ -43,72 +53,67 @@ void SkyBox::drawSkyBox(GLdouble* camPos)
 	glEnd();
   
 	// Right side
-	//glBindTexture(GL_TEXTURE_2D, texturePosX);
 	glBegin(GL_POLYGON);
 	glNormal3f(1,0,0);
-	//glTexCoord2f(1, 1);
+	glTexCoord2f(1, 1);
 	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 1);
+	glTexCoord2f(0, 1);
 	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
-	//glTexCoord2f(1, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	glEnd(); 
 
 	// Back side
-	//glBindTexture(GL_TEXTURE_2D, textureNegZ);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,0,1);
-	//glTexCoord2f(1, 1);
+	glTexCoord2f(1, 1);
 	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 1);
+	glTexCoord2f(0, 1);
 	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(1, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
 	glEnd();
 
 	// Left side
-	//glBindTexture(GL_TEXTURE_2D, textureNegX);
 	glBegin(GL_POLYGON);
 	glNormal3f(-1,0,0);
-	//glTexCoord2f(1, 1);
+	glTexCoord2f(1, 1);
 	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
-	//glTexCoord2f(0, 1);
+	glTexCoord2f(0, 1);
 	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(1, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glEnd(); 
 
 	// Top side
-	//glBindTexture(GL_TEXTURE_2D, texturePosY);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,1,0);
-	//glTexCoord2f(0, 1);
+	glTexCoord2f(0, 1);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(-50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(1, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(1, 1);
+	glTexCoord2f(1, 1);
 	glVertex3f(50 + camPos[0], 50 + camPos[1], -50 + camPos[2]);
 	glEnd();
 
 	// Bottom side
-	//glBindTexture(GL_TEXTURE_2D, textureNegY);
 	glBegin(GL_POLYGON);
 	glNormal3f(0,-1,0);
-	//glTexCoord2f(1, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
-	//glTexCoord2f(1, 1);
+	glTexCoord2f(1, 1);
 	glVertex3f(50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 1);
+	glTexCoord2f(0, 1);
 	glVertex3f(-50 + camPos[0], -50 + camPos[1], 50 + camPos[2]);
-	//glTexCoord2f(0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f(-50 + camPos[0], -50 + camPos[1], -50 + camPos[2]);
 	glEnd();
 
@@ -116,4 +121,45 @@ void SkyBox::drawSkyBox(GLdouble* camPos)
 	glPopClientAttrib();
 	glPopMatrix();
 	glPopAttrib();
+}
+
+GLuint SkyBox::loadTexture(char* name)
+{
+   GLuint texNum;
+  int width = 0, height = 0;
+  char* pixelData = 0;
+  int nameLen = strlen(name);
+
+  if ((nameLen >= 4 && (!strcmp(name + nameLen - 4, ".jpg")
+			|| !strcmp(name + nameLen - 4, ".JPG")))
+      || (nameLen >= 5 && (!strcmp(name + nameLen - 5, ".jpeg")
+			   || !strcmp(name + nameLen - 5, ".JPEG"))))
+    {
+      read_JPEG_file(name, &pixelData, &width, &height);
+    }
+  /* We dont need PPM, less things to worry about
+
+  else if (nameLen >= 4 && (!strcmp(name + nameLen - 4, ".ppm")
+			    || !strcmp(name + nameLen - 4, ".PPM")))
+    {
+      pixelData = readppm(name, &width, &height);
+    }
+  */
+
+  if (!pixelData)
+    exit(0);
+
+  glGenTextures(1, &texNum);
+  glBindTexture(GL_TEXTURE_2D, texNum);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
+	       GL_RGB, GL_UNSIGNED_BYTE, pixelData);
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  free(pixelData);
+
+  return texNum;
 }

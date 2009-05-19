@@ -32,6 +32,10 @@ class Ship {
 
   GLuint loadTexture(char* name);
 
+  /* Ship objects */
+  GLUquadricObj* _shipBody;
+  GLUquadricObj* _shipWindshield;
+
   /* Physics variables */
   GLdouble jumpLength;
   GLdouble hoverHeight;
