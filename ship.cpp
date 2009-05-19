@@ -24,6 +24,16 @@ Ship::Ship(Camera* cam)
   gluQuadricNormals(_shipWindshield, GLU_SMOOTH);
   gluQuadricTexture(_shipWindshield, GL_TRUE);
 
+  _shipEngine = gluNewQuadric();
+  gluQuadricDrawStyle(_shipEngine, GLU_FILL);
+  gluQuadricNormals(_shipEngine, GLU_SMOOTH);
+  gluQuadricTexture(_shipEngine, GL_TRUE);
+
+  _shipEngineBack = gluNewQuadric();
+  gluQuadricDrawStyle(_shipEngineBack, GLU_FILL);
+  gluQuadricNormals(_shipEngineBack, GLU_SMOOTH);
+  gluQuadricTexture(_shipEngineBack, GL_TRUE);
+
   /**
    ** "Physics" variables
    */
@@ -64,10 +74,15 @@ Ship::Ship(Camera* cam)
 
   _jumpLengthOriginal = jumpLength;
 
+  _shipFumes = 0.0;
+
 }
 
 void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 {
+  if (blockDistance < 0.00)
+    cout << blockDistance << endl;
+
   printHighscore();
 
   glMatrixMode(GL_MODELVIEW);
@@ -122,13 +137,10 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
   /* Change variables so next time we move forward (and accelerate) */
   if (_moving)
     {  
-      if (_currentSpeed < velocity)
+      if (_currentSpeed < velocity
+	  && !_jumping)
 	{
 	  _currentSpeed = _currentSpeed + 0.001;
-	}
-      else if (_currentSpeed > velocity)
-	{
-	  _currentSpeed = _currentSpeed - 0.001;
 	}
 
       // Move forward
@@ -136,6 +148,9 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
       _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
 
       _location[2] = _location[2] - _currentSpeed; // Speed is constant
+
+      if (_shipFumes < 0.5)
+	_shipFumes += 0.01;
 
       //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
     }
@@ -161,10 +176,12 @@ void Ship::jumpShip()
     }
   else if (_jumping == false && _falling == false)
     {
+      //cout << "Start: " << _location[1] << endl;
       _jumpOrigin = _location[2];
       _jumpDestinationZ = _location[2] - (jumpLength * _currentSpeed);
       _jumpDestinationZ = (jumpLength * _currentSpeed);
       _jumping = true;
+      _shipFumes = 1.0;
     }
 }
 
@@ -199,10 +216,11 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       if (_jumpAngleX > -50)
 	_jumpAngleX--;
     }
+
   // Keep ship near block!
   else if (blockDistance < 0.5)
     {
-	 //_location[1] += 0.01;
+	 _location[1] += 0.01;
       if ((_jumpAngleX < 0) && !_jumping)
 	_jumpAngleX += 2;
     }
@@ -214,6 +232,12 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       if (_jumpAngleX < 0)
 	_jumpAngleX += 2;
     }
+
+  
+  if (blockDistance >= -0.15
+      && blockDistance < 0.00)
+    _location[1] += 0.15;
+  
 
   // Are we dead?
   if ( (blockDistance < -0.15))
@@ -228,10 +252,6 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
-  else if (blockDistance >= -0.15
-	   && blockDistance < 0.00)
-    _location[1] += 0.10;
-
 }
 
 void Ship::jump()
@@ -242,7 +262,7 @@ void Ship::jump()
   GLdouble distanceFactor = fabs((_location[2] - _jumpOrigin) / _jumpDestinationZ);
   GLdouble jumpHeight;
 
-  if (distanceFactor <= 0.500)
+  if (distanceFactor <= 0.50)
     {
       //jumpHeight = _currentSpeed - (_currentSpeed * sin(distanceFactor * M_PI));
       jumpHeight = (0.10 - (_currentSpeed * sin(distanceFactor * M_PI)))/2;
@@ -252,10 +272,10 @@ void Ship::jump()
 	_jumpAngleX += 3;
 
     }
-  else if ((distanceFactor <= 0.999)
-	   && (distanceFactor > 0.500))
+  else if ((distanceFactor <= 0.99)
+	   && (distanceFactor > 0.50))
     {
-      jumpHeight = (_currentSpeed * (1 - sin(distanceFactor * M_PI)))*1.8;
+      jumpHeight = (_currentSpeed * (1 - sin(distanceFactor * M_PI)))*2.0;
 
       _location[1] = _location[1] - jumpHeight;
 
@@ -263,7 +283,16 @@ void Ship::jump()
 	  && (distanceFactor > 0.800))	  
 	{
 	_jumpAngleX -= 2;
+
+	if (_jumpAngleX < 0)
+	  _jumpAngleX = 0;
+
+	if (_shipFumes > 0.5)
+	  _shipFumes -= 0.05;
 	}
+
+    }
+
 
      /*
       else if ((_jumpAngleX > (-jumpAngleMax))
@@ -283,12 +312,13 @@ void Ship::jump()
 	}
       */
 
-    }
+    
   else
     {
       _jumping = false;
       _jumpAngleX = 0;
-      _location[1] -= 0.10;
+      _location[1] -= 0.08;
+      //cout << "End: " << _location[1] << endl;
     } 
 }
 
@@ -432,8 +462,19 @@ void Ship::drawBody()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+    // Enable lighting and light 0 
+  
+  //glEnable(GL_LIGHTING);
+  //glEnable(GL_LIGHT0);
+  //glEnable(GL_NORMALIZE);
+  
+
+ //glTranslatef(0.0,0.1,0.0);
+
   // Scale
-  glScalef(0.7,0.3,1.0); //Size of squashed sphere
+  glScalef(0.6,0.3,1.0); //Size of squashed sphere
+
+  glRotatef(180, 0.0, 0.15, 10.0);
 
   // Enable texturing
   glEnable(GL_TEXTURE_2D);
@@ -447,8 +488,80 @@ void Ship::drawBody()
   // Create GLU sphere
   gluSphere(_shipBody, 0.6, 16, 16);
 
+  //glScalef(1, 1, 1);
   // Disable texturing
   glDisable(GL_TEXTURE_2D);
+
+  glDisable(GL_LIGHTING);
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+  glTranslatef(0.25, // a bit to the right
+	       -0.04,
+	       -0.1 // a bit back
+	       );
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glRotatef(180, 0, 0, 10.0);
+  gluCylinder(_shipEngine,
+	      0.12, // base 0.09? 0.18?
+	      0.27, // top
+	      0.7, // height
+	      12, //slices
+	      12  // stacks
+	      );
+  glDisable(GL_TEXTURE_2D);
+  glColor3f(_shipFumes,0.5*_shipFumes,0);
+  glTranslatef(0.0,
+	       0.0,
+	       0.7 // back
+	       );
+  gluDisk(_shipEngineBack,
+	  0, // inner radius
+	  0.27, // outer radius
+	  12, // slices
+	  12 // rings
+	  );
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
+
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+  glTranslatef(-0.27, // a bit to the right
+	       -0.04,
+	       -0.1 // a bit back
+	       );
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glRotatef(180, 0, 0, 10.0);
+  gluCylinder(_shipEngine,
+	      0.12, // base 0.09? 0.18?
+	      0.27, // top
+	      0.7, // height
+	      12, //slices
+	      12  // stacks
+	      );
+  glDisable(GL_TEXTURE_2D);
+  glColor3f(_shipFumes,0.5*_shipFumes,0);
+  glTranslatef(0.0,
+	       0.0,
+	       0.7 // back
+	       );
+  gluDisk(_shipEngineBack,
+	  0, // inner radius
+	  0.27, // outer radius
+	  12, // slices
+	  12 // rings
+	  );
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -471,7 +584,7 @@ void Ship::drawWindshield()
   glEnable(GL_CLIP_PLANE1);
 
   // Draw Sphere "windshield"
-  glColor4f(0,0,0,0.8);
+  glColor4f(0.5,0,0,0.75);
   glTranslatef(0.0,0.0,-0.25);
 
   gluSphere(_shipWindshield, 0.27, 16, 16);

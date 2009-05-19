@@ -35,6 +35,8 @@ class Ship {
   /* Ship objects */
   GLUquadricObj* _shipBody;
   GLUquadricObj* _shipWindshield;
+  GLUquadricObj* _shipEngine;
+  GLUquadricObj* _shipEngineBack;
 
   /* Physics variables */
   GLdouble jumpLength;
@@ -80,6 +82,8 @@ class Ship {
 
   GLdouble _jumpOrigin;
   GLdouble _jumpLengthOriginal;
+
+  GLdouble _shipFumes;
 };
 
 #endif
