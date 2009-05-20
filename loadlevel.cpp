@@ -146,6 +146,18 @@ void LoadLevel::loadNewLevel(string name)
 		  newBlock = 0;
 		  delete newBlock;			     
 		}
+	      // Create an end block
+	      else if(data == 4)
+		{
+		  Block* newBlock = new Block();
+		  newBlock->setType(4);
+		  newBlock->setAngle(angle);
+		  newBlock->setCoord(xyzMiddle);
+		  
+		  blocks_.push_back(newBlock);
+		  newBlock = 0;
+		  delete newBlock;			     
+		}
 	      
 	      xyzRotatePos[0]++;
 	      xyzRotateNeg[0]++;
