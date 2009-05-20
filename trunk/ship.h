@@ -17,15 +17,13 @@ class Ship {
 
  private:
   void gravity(GLdouble yDistance, GLdouble blockAngle);
-
   void jump();
-
   void turn();
   void turnRotateZ(GLboolean movingLeft, GLdouble distanceLeft);
-
   void wiggle();
-
   void hover();
+  void warp();
+  void intro();
 
   void drawBody();
   void drawEngine(GLint nr);
@@ -60,6 +58,8 @@ class Ship {
   GLboolean _turning;
   GLboolean _wiggle;
   GLboolean _falling;
+  GLboolean _warping;
+  GLboolean _intro;
 
   // Misc
   GLboolean _wiggleToRight;
@@ -87,6 +87,7 @@ class Ship {
   GLdouble _jumpLengthOriginal;
 
   GLdouble _shipFumes;
+  GLdouble _warpCounter;
 
 };
 

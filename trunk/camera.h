@@ -8,6 +8,8 @@ class Camera {
   Camera();
   void LookAtThis(GLdouble x, GLdouble y, GLdouble z);
   GLboolean slowZ;
+  GLboolean still;
+  void reset();
   GLdouble* getLocation();
 
  private:
