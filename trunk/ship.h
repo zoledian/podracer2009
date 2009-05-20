@@ -28,6 +28,7 @@ class Ship {
   void hover();
 
   void drawBody();
+  void drawEngine(GLint nr);
   void drawWindshield();
 
   void printHighscore();

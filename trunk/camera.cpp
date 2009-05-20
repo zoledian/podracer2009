@@ -18,7 +18,6 @@ Camera::Camera()
 
 void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 {
-
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(90, 1, 0.01, 100);
@@ -63,11 +62,17 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
   else
     _location[2] = z + 3.0;
 
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(_location[0], _location[1], _location[2],
 	    x, y, z-3,
 	    0, 1, 0);
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
 }
 
 GLdouble* Camera::getLocation()
