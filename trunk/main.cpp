@@ -1,7 +1,8 @@
 #include <iostream>
 #include <math.h>
 #include "stdlib.h" // needed for 'exit()'
-
+#include <string.h>
+#include <sstream>
 #include "camera.h"
 #include "ship.h"
 #include "loadlevel.h"
@@ -25,6 +26,7 @@ Ship* Spaceship;
 LoadLevel* loadLevel;
 SkyBox* skyBox;
 Collision* collision;
+int level;
 
 /*** 
  *** INPUT FUNCTIONS
@@ -61,6 +63,16 @@ void display()
   // This function is called whenever it is time to render
   //  a new frame; due to the idle()-function below, this
   //  function will get called several times per second
+
+  if ((Spaceship->readyForNextLevel == true) && (level <= 2))
+    {
+      level++;
+      stringstream ss;
+      ss << "level" << (GLint) level << ".dat";
+      string newlevel(ss.str());
+      loadLevel->loadNewLevel(newlevel);
+      Spaceship->reset();
+    }
 
   // Clear framebuffer & zbuffer
   glClearColor(0.3, 0, 0, 1);
@@ -145,6 +157,7 @@ int main(int argc, char **argv)
   loadLevel = new LoadLevel("level1.dat"); // Testlevel
   skyBox = new SkyBox(); // Skybox
   collision = new Collision();
+  level = 1;
   
   // Enter GLUT's main loop; this function will never return
   glutMainLoop();

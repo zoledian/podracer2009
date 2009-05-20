@@ -76,6 +76,8 @@ Ship::Ship(Camera* cam)
 
   _shipFumes = 0.0;
 
+  readyForNextLevel = false;
+
 }
 
 void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
@@ -89,7 +91,11 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 
   /* First: Change internal variables, do not rotate or translate yet */
 
-  if (blockType == 3)
+  if (blockType == 4)
+    {
+      readyForNextLevel = true;
+    }
+  else if (blockType == 3)
     {
       jumpLength = _jumpLengthOriginal + (_jumpLengthOriginal/5);
     }
@@ -176,7 +182,6 @@ void Ship::jumpShip()
     }
   else if (_jumping == false && _falling == false)
     {
-      //cout << "Start: " << _location[1] << endl;
       _jumpOrigin = _location[2];
       _jumpDestinationZ = _location[2] - (jumpLength * _currentSpeed);
       _jumpDestinationZ = (jumpLength * _currentSpeed);
@@ -705,4 +710,11 @@ GLuint Ship::loadTexture(char* name)
   free(pixelData);
 
   return texNum;
+}
+
+void Ship::reset()
+{
+  _camera->LookAtThis(0,0,-100.0);
+  _camera->slowZ = true;
+  new (this)Ship(_camera);
 }

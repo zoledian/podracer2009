@@ -12,6 +12,8 @@ class Ship {
   void moveHere(GLint cubeNr);
   void jumpShip();
   GLdouble* getPosition();
+  GLboolean readyForNextLevel;
+  void reset();
 
  private:
   void gravity(GLdouble yDistance, GLdouble blockAngle);
@@ -84,6 +86,7 @@ class Ship {
   GLdouble _jumpLengthOriginal;
 
   GLdouble _shipFumes;
+
 };
 
 #endif

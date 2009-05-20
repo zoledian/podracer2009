@@ -57,6 +57,17 @@ void Block::draw()
 	  
 	  glutSolidCube(1);	  
      }
+     if(type_ == 4) // Ordinary block (finish)
+     {
+ 	  
+	  glColor3f(red_, green_, blue_); 
+	  
+	  // Translate to the right coordinates and rotate
+	  glTranslatef(coord_[0],coord_[1],coord_[2]);
+	  glRotatef(angle_,1,0,0);
+	  glutSolidCube(1);
+	  
+     }
 
      glPopMatrix();
      glPopAttrib(); // Restore color
