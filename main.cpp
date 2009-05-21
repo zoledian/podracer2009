@@ -87,9 +87,9 @@ void display()
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
 
-  //Gourade shading
-  glShadeModel(GL_SMOOTH);
+  // Enable Gourade shading
   glEnable(GL_NORMALIZE);
+  glShadeModel(GL_SMOOTH);
 
   skyBox->drawSkyBox(Cam->getLocation());
 
