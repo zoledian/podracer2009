@@ -47,7 +47,10 @@ void Block::draw()
 	  glTranslatef(coord_[0],coord_[1],coord_[2]);
 	  glRotatef(angle_,1,0,0);
 	  //glutSolidCube(1);
+	  glTranslatef(0,0.4,0);
+	  glScalef(1,0.2,1.0);
 	  
+
 	  // Draw block
 	  // Front side
 	  glBegin(GL_POLYGON);
@@ -102,7 +105,6 @@ void Block::draw()
 	  glVertex3f(-0.5, -0.5, 0.5);
 	  glVertex3f(-0.5, -0.5, -0.5);
 	  glEnd();
-	  
 
      }
      else if(type_ == 3) // Jump block
