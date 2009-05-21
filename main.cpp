@@ -8,6 +8,7 @@
 #include "loadlevel.h"
 #include "skybox.h"
 #include "collision.h"
+#include "lighting.h"
 using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
@@ -27,6 +28,7 @@ LoadLevel* loadLevel;
 SkyBox* skyBox;
 Collision* collision;
 int level;
+Lighting* lighting;
 
 /*** 
  *** INPUT FUNCTIONS
@@ -85,9 +87,20 @@ void display()
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
 
+  //Gourade shading
+  glShadeModel(GL_SMOOTH);
+  glEnable(GL_NORMALIZE);
+
   skyBox->drawSkyBox(Cam->getLocation());
 
+
+  // Apply standard lighting
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  lighting->setStandard();
   loadLevel->drawLevel();
+  glDisable(GL_LIGHTING);
+  glDisable(GL_LIGHT0);
   
   // Use collision to find the distance to the block below
   // the ship and the blocks angle
@@ -157,6 +170,7 @@ int main(int argc, char **argv)
   loadLevel = new LoadLevel("level1.dat"); // Testlevel
   skyBox = new SkyBox(); // Skybox
   collision = new Collision();
+  lighting = new Lighting();
   level = 1;
   
   // Enter GLUT's main loop; this function will never return
