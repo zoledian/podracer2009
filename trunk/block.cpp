@@ -15,7 +15,6 @@ Block::Block()
      {
 	  coord_[i] = 0;
      }
-     
 }
 
 
@@ -28,13 +27,10 @@ void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 
 void Block::draw()
 {
-     glPushMatrix();
-     glPushAttrib(GL_CURRENT_BIT); // Save color
-
      if(type_ == 2) // Ordinary block
      {
  	  
-	  glColor3f(red_, green_, blue_); 
+          glColor3f(red_, green_, blue_); 
 
 	  //glEnable(GL_DEPTH_TEST);
 	  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen and z-buffer
@@ -55,60 +51,86 @@ void Block::draw()
 	  // Front side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(0,0,-1);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(-0.5, 0.5, -0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(0.5, 0.5, -0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(0.5, -0.5, -0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(-0.5, -0.5, -0.5);
 	  glEnd();
 	  
 	  // Right side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(1,0,0);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(0.5, -0.5, 0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(0.5, -0.5, -0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(0.5, 0.5, -0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(0.5, 0.5, 0.5);
 	  glEnd(); 
 	  
 	  // Back side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(0,0,1);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(-0.5, -0.5, 0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(0.5, -0.5, 0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(0.5, 0.5, 0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(-0.5, 0.5, 0.5);
 	  glEnd();
 	  
 	  // Left side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(-1,0,0);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(-0.5, -0.5, -0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(-0.5, -0.5, 0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(-0.5, 0.5, 0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(-0.5, 0.5, -0.5);
 	  glEnd(); 
 	  
 	  // Top side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(0,1,0);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(-0.5, 0.5, -0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(-0.5, 0.5, 0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(0.5, 0.5, 0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(0.5, 0.5, -0.5);
 	  glEnd();
 	  
 	  // Bottom side
 	  glBegin(GL_POLYGON);
 	  glNormal3f(0,-1,0);
+	  glTexCoord2f(0, 0);
 	  glVertex3f(0.5, -0.5, -0.5);
+	  glTexCoord2f(1, 0);
 	  glVertex3f(0.5, -0.5, 0.5);
+	  glTexCoord2f(1, 1);
 	  glVertex3f(-0.5, -0.5, 0.5);
+	  glTexCoord2f(0, 1);
 	  glVertex3f(-0.5, -0.5, -0.5);
 	  glEnd();
 
      }
      else if(type_ == 3) // Jump block
-       {  
+       { 
+	 glDisable(GL_LIGHTING);
+
 	 glColor3f(0.0, 0.2, 0.3); 
 	  
 	  // Translate to the right coordinates and rotate
@@ -119,7 +141,9 @@ void Block::draw()
 	  glTranslatef(0,0.4,0);
 	  glScalef(1,0.2,1.0);
 	  
-	  glutSolidCube(1);	  
+	  glutSolidCube(1);	
+
+	  glEnable(GL_LIGHTING); 
      }
      if(type_ == 4) // Ordinary block (finish)
      {
@@ -133,8 +157,6 @@ void Block::draw()
 	  
      }
 
-     glPopMatrix();
-     glPopAttrib(); // Restore color
 }
 
 void Block::setType(int type)

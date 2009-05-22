@@ -6,11 +6,16 @@
 #include <sstream>
 #include <cmath>
 #include "loadlevel.h"
+#include <string.h>
+#include <sstream>
+#include "readjpeg.h"
+#include "stdlib.h"
 using namespace std;
 
 LoadLevel::LoadLevel(string name)
 {
-	loadNewLevel(name);
+        loadNewLevel(name, 1);
+	textureNr_ = 0;
 }
 
 LoadLevel::~LoadLevel()
@@ -23,8 +28,15 @@ LoadLevel::~LoadLevel()
 }
 
 // Load a new level from file
-void LoadLevel::loadNewLevel(string name)
+void LoadLevel::loadNewLevel(string name, int textureNr)
 {
+	stringstream ss;
+	ss << "./textures/concrete" << (GLint) textureNr << ".jpg";
+	string texture(ss.str());
+	cout << texture << endl;
+	const char* textureP = texture.c_str();
+
+        textureId_ = loadTexture((char*)textureP);
 
 	// Delete the level currently loaded and change size of vector to 0
 	for(unsigned int i = 0; i < blocks_.size(); i++)
@@ -180,19 +192,71 @@ void LoadLevel::loadNewLevel(string name)
 // Draw the blocks in the level
 void LoadLevel::drawLevel()
 {
-  glPushMatrix();
-  glPushAttrib(GL_CURRENT_BIT); // Save color
-  
+
   for(unsigned int i = 0; i < blocks_.size(); i++)
     {
-      blocks_[i]->draw();
-    }
+      glPushMatrix();
+      glPushAttrib(GL_CURRENT_BIT); // Save color
+
+      if (blocks_[i]->getType() == 2)
+	{
+	  glEnable(GL_TEXTURE_2D);
+
+	  glBindTexture(GL_TEXTURE_2D, textureId_);  
   
-  glPopMatrix();
-  glPopAttrib(); // Restore color
+	  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	  
+	  blocks_[i]->draw();
+
+	  glDisable(GL_TEXTURE_2D);
+
+	}
+      else
+	blocks_[i]->draw();
+
+      glPopMatrix();
+      glPopAttrib(); // Restore color
+    }
 }
 
 vector<Block*> LoadLevel::getLevelVector()
 {
   return blocks_;
+}
+
+GLuint LoadLevel::loadTexture(char* name)
+{
+  GLuint texNum;
+  int width = 0, height = 0;
+  char* pixelData = 0;
+  int nameLen = strlen(name);
+
+  if ((nameLen >= 4 && (!strcmp(name + nameLen - 4, ".jpg")
+			|| !strcmp(name + nameLen - 4, ".JPG")))
+      || (nameLen >= 5 && (!strcmp(name + nameLen - 5, ".jpeg")
+			   || !strcmp(name + nameLen - 5, ".JPEG"))))
+    {
+      read_JPEG_file(name, &pixelData, &width, &height);
+    }
+
+  if (!pixelData)
+    exit(0);
+
+  glGenTextures(1, &texNum);
+  glBindTexture(GL_TEXTURE_2D, texNum);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixelData);
+  /*glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
+    GL_RGB, GL_UNSIGNED_BYTE, pixelData);*/
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  free(pixelData);
+
+  return texNum;
 }

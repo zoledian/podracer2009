@@ -72,7 +72,7 @@ void display()
       stringstream ss;
       ss << "level" << (GLint) level << ".dat";
       string newlevel(ss.str());
-      loadLevel->loadNewLevel(newlevel);
+      loadLevel->loadNewLevel(newlevel, level);
       Spaceship->reset();
     }
 
