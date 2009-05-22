@@ -4,7 +4,7 @@ name = podracer2009
 version = 0.1
 
 podracer2009 : ${OBJECTS}
-	$(CC) -lGLEW -lglut -lGL -ljpeg -o $(name)-$(version) $(OBJECTS)
+	$(CC) -lglut -lGL -ljpeg -o $(name)-$(version) $(OBJECTS)
 
 main.o : main.cpp
 	$(CC)  -c main.cpp
