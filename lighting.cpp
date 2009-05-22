@@ -18,8 +18,8 @@ void Lighting::setStandard()
   // Set material properties
   GLfloat mat_shininess[] = { 20.0 };
   GLfloat mat_ambient[] = { 0.5, 0.5, 0.5, 0.0 };
-  GLfloat mat_diffuseColor[] = { 0.2, 0.2, 0.2, 0.0 };
-  GLfloat mat_specularColor[] = { 0.2, 0.2, 0.2, 0.0 };
+  GLfloat mat_diffuseColor[] = { 0.5, 0.5, 0.5, 0.0 };
+  GLfloat mat_specularColor[] = { 0.5, 0.5, 0.5, 0.0 };
 
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);

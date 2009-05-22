@@ -1,10 +1,10 @@
-OBJECTS :=  main.o camera.o block.o loadlevel.o skybox.o collision.o readjpeg.o ship.o lighting.o
+	OBJECTS :=  main.o camera.o block.o loadlevel.o skybox.o collision.o readjpeg.o ship.o lighting.o shaderutils.o
 CC = g++ -g -Wall 
 name = podracer2009
 version = 0.1
 
 podracer2009 : ${OBJECTS}
-	$(CC) -lglut -lGL -ljpeg -o $(name)-$(version) $(OBJECTS)
+	$(CC) -lGLEW -lglut -lGL -ljpeg -o $(name)-$(version) $(OBJECTS)
 
 main.o : main.cpp
 	$(CC)  -c main.cpp
@@ -29,6 +29,9 @@ collision.o : collision.cpp collision.h
 
 readjpeg.o : readjpeg.c readjpeg.h
 	gcc -g -Wall -c -shared -fPIC readjpeg.c
+
+shaderutils.o : shaderutils.c shaderutils.h
+	gcc -g -Wall -c -shared -fPIC shaderutils.c
 
 lighting.o : lighting.cpp lighting.h
 	$(CC)  -c lighting.cpp
