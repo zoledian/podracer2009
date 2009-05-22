@@ -80,6 +80,7 @@ class Ship {
   Camera* _camera;
 
   GLuint textureId;
+  GLuint textureId2;
 
   GLdouble hereWeDie; // FIXME
 

@@ -70,6 +70,7 @@ Ship::Ship(Camera* cam)
   _camera->still = false;
 
   textureId = loadTexture("./textures/ship.jpg");
+  textureId2 = loadTexture("./textures/windshield.jpg");
 
   hereWeDie = -10.0;
 
@@ -612,6 +613,15 @@ void Ship::drawEngine(GLint nr)
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  // Set material properties
+  GLfloat mat_shininess[] = { 20.0 };
+  GLfloat mat_ambient[] = { 1, 1, 1, 0.0 };
+  GLfloat mat_diffuseColor[] = { 1, 1, 1, 0.0 };
+  GLfloat mat_specularColor[] = { 1, 1, 1, 0.0 };
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 
   /* Draw cyliner */
   glTranslatef(translateX,
@@ -675,15 +685,29 @@ void Ship::drawWindshield()
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
+  GLfloat mat_shininess[] = { 200.0 };
+  GLfloat mat_ambient[] = { 10, 1, 1, 0.0 };
+  GLfloat mat_diffuseColor[] = { 10, 0.1, 0.1, 0.0 };
+  GLfloat mat_specularColor[] = { 10, 10, 10, 0.0 };
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_TEXTURE_2D);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glBindTexture(GL_TEXTURE_2D, textureId2);
 
   double clip_plane1[]={0.0, 1.0, 0.0, 0};
   glClipPlane(GL_CLIP_PLANE1,clip_plane1);
   glEnable(GL_CLIP_PLANE1);
 
   // Draw Sphere "windshield"
-  glColor4f(0.5,0,0,0.75);
+  glColor4f(0.9,0,0,0.9);
   glTranslatef(0.0,0.0,-0.25);
 
   gluSphere(_shipWindshield, 0.27, 16, 16);
@@ -692,6 +716,9 @@ void Ship::drawWindshield()
   glDisable(GL_CLIP_PLANE1);
 
   glDisable(GL_BLEND);
+
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
