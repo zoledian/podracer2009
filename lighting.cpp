@@ -9,7 +9,7 @@ Lighting::Lighting()
 void Lighting::setStandard()
 {
   // Position light
-  GLfloat light_position[] = { 0.0, 5.0, 5.0, 0.0 };
+  GLfloat light_position[] = { 0.0, 5.0, 0.0, 0.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,  1.0);
   glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.00);
