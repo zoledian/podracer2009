@@ -232,7 +232,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
   // Are we falling down?
   if (((blockDistance >= 0.7) || (blockDistance == 0)) 
       && (!_jumping) 
-      && (blockAngle == 0))
+      /*&& (blockAngle == 0)*/)
     {
       _location[1] = _location[1] - 0.10;
       _falling = true;
@@ -566,6 +566,9 @@ void Ship::drawBody()
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+
   // Scale
   glScalef(0.5,0.3,1.0); //Size of squashed sphere
 
@@ -575,7 +578,7 @@ void Ship::drawBody()
   glEnable(GL_TEXTURE_2D);
 
   // Replace colors with that of texture's
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   // Specify texture to use
   glBindTexture(GL_TEXTURE_2D, textureId);
@@ -585,6 +588,8 @@ void Ship::drawBody()
 
   // Disable texturing
   glDisable(GL_TEXTURE_2D);
+
+  glDisable(GL_LIGHTING);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -604,6 +609,10 @@ void Ship::drawEngine(GLint nr)
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
   /* Draw cyliner */
   glTranslatef(translateX,
 	       -0.04,
@@ -620,6 +629,7 @@ void Ship::drawEngine(GLint nr)
 	      12  // stacks
 	      );
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
 
   /* Draw bottom disk "fumes" */
   glColor3f(_shipFumes,0.5*_shipFumes,0);
@@ -633,6 +643,9 @@ void Ship::drawEngine(GLint nr)
 	  12, // slices
 	  12 // rings
 	  );
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
   
   /* Draw top disk */
   //glEnable(GL_TEXTURE_2D);
@@ -650,6 +663,7 @@ void Ship::drawEngine(GLint nr)
 	  12 // rings
 	  );
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -678,7 +692,7 @@ void Ship::drawWindshield()
   glDisable(GL_CLIP_PLANE1);
 
   glDisable(GL_BLEND);
-  
+
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
 
