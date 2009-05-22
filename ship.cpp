@@ -84,6 +84,7 @@ Ship::Ship(Camera* cam)
   _warping = false;
   _warpCounter = 0.0;
   _intro = true;
+  _highscore = 0;
 }
 
 void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
@@ -165,11 +166,12 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 	  // Move forward
 	  // _location[2] = _location[2] - _currentSpeed; OLD
 	  _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
-
 	  _location[2] = _location[2] - _currentSpeed; // Speed is constant
 
 	  if (_shipFumes < 0.5)
 	    _shipFumes += 0.01;
+
+	  _highscore += 0.01;
 
 	  //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
 	}
@@ -188,6 +190,9 @@ void Ship::moveHere(GLint cubeNr)
     {
       _cubeNr = _cubeNr+cubeNr;
       _turning = true;
+
+      if (_highscore > 0)
+	_highscore -= 0.5;
     }
 }
 
@@ -206,6 +211,9 @@ void Ship::jumpShip()
       _jumpDestinationZ = (jumpLength * _currentSpeed);
       _jumping = true;
       _shipFumes = 1.0;
+
+      if (_highscore > 0)
+	_highscore -= 0.5;
     }
 }
 
@@ -709,7 +717,7 @@ void Ship::drawWindshield()
 
   // Draw Sphere "windshield"
   glColor4f(0.9,0,0,0.9);
-  glTranslatef(0.0,0.0,-0.25);
+  glTranslatef(0.0,0.0,-0.20);
 
   gluSphere(_shipWindshield, 0.27, 16, 16);
 
@@ -733,13 +741,8 @@ void Ship::printHighscore()
 
   string text = "Highscore: ";
   
-  // Skapa en stringstream
   std::stringstream ss;
-
-  // Lägg in saker i den..
-  ss << "Highscore: " << (GLint) fabs(_location[2]);
-
-  // Konvertera till en string
+  ss << "Highscore: " << (GLint) _highscore;
   std::string s( ss.str() );
 
   for ( unsigned int i = 0; i < s.length(); i++)
@@ -797,6 +800,8 @@ GLuint Ship::loadTexture(char* name)
 
 void Ship::reset()
 {
+  GLdouble highscore = _highscore;
+
   new (this)Ship(_camera);
 
   _location[0] =  _location[1] = 0.0;
@@ -804,4 +809,6 @@ void Ship::reset()
   _camera->slowZ = true;
   _camera->still = true;
   _camera->reset();
+
+  _highscore = highscore;
 }

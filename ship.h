@@ -89,6 +89,7 @@ class Ship {
 
   GLdouble _shipFumes;
   GLdouble _warpCounter;
+  GLdouble _highscore;
 
 };
 
