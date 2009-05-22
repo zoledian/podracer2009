@@ -511,10 +511,7 @@ void Ship::warp()
 	       _location[1]+_hoverY+_warpCounter,
 	       _location[2]-_warpCounter*10);
 
-  drawBody();
-  drawEngine(1);
-  drawEngine(2);
-  drawWindshield();
+  drawShip();
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -568,10 +565,7 @@ void Ship::intro()
 	       _location[1]+_hoverY,
 	       _location[2]);
   
-  drawBody();
-  drawEngine(1);
-  drawEngine(2);
-  drawWindshield();
+  drawShip();
   
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
@@ -713,6 +707,7 @@ void Ship::drawWindshield()
 void Ship::printHighscore()
 {
   glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
 
   string text = "Highscore: ";
   
@@ -724,6 +719,7 @@ void Ship::printHighscore()
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, s[i]);
 
   glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
 
 }
 
