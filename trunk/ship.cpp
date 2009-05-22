@@ -685,7 +685,8 @@ void Ship::drawWindshield()
   glPushAttrib(GL_CURRENT_BIT); // Save color
 
   glEnable(GL_BLEND);
-  glBlendFunc(GL_ZERO,GL_SRC_COLOR);
+  //glBlendFunc(GL_ZERO,GL_SRC_COLOR);
+  glBlendFunc(GL_SRC_ALPHA,GL_SRC_COLOR);
 
   GLfloat mat_shininess[] = { 200.0 };
   GLfloat mat_ambient[] = { 10, 1, 1, 0.0 };
