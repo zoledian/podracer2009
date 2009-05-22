@@ -87,7 +87,7 @@ Ship::Ship(Camera* cam)
   _highscore = 0;
 }
 
-void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
+void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 {
   printHighscore();
 
@@ -142,11 +142,7 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
       glRotatef(_turnAngle, 0.0, 0.0, -10.0);
       glRotatef((_turnAngle + _wiggleAngle), 0.0, -10.0, 0.0);
 
-      /* Draw ship */
-      drawBody();
-      drawEngine(1);
-      drawEngine(2);
-      drawWindshield();
+      drawShip();
 
       glPopMatrix(); // Restore matrix
       glPopAttrib(); // Restore color
@@ -181,6 +177,20 @@ void Ship::drawShip(GLdouble blockDistance, GLdouble blockAngle, int blockType)
   else if (_intro == true)
     intro();
 
+}
+
+void Ship::drawShip()
+{
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_TEXTURE_2D);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+  /* Draw ship */
+  drawBody();
+  drawEngine(1);
+  drawEngine(2);
+  drawWindshield();
 }
 
 void Ship::moveHere(GLint cubeNr)
@@ -573,21 +583,11 @@ void Ship::intro()
 void Ship::drawBody()
 {
   glPushMatrix(); // Save matrix
-  glPushAttrib(GL_CURRENT_BIT); // Save color
-
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
 
   // Scale
   glScalef(0.5,0.3,1.0); //Size of squashed sphere
 
   glRotatef(180, 0.0, 0.15, 10.0);
-
-  // Enable texturing
-  glEnable(GL_TEXTURE_2D);
-
-  // Replace colors with that of texture's
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   // Specify texture to use
   glBindTexture(GL_TEXTURE_2D, textureId);
@@ -595,16 +595,7 @@ void Ship::drawBody()
   // Create GLU sphere
   gluSphere(_shipBody, 0.6, 16, 16);
 
-  // Disable texturing
-  glDisable(GL_TEXTURE_2D);
-
-  glDisable(GL_LIGHTING);
-
   glPopMatrix(); // Restore matrix
-  glPopAttrib(); // Restore color
-
-
-
 }
 
 void Ship::drawEngine(GLint nr)
@@ -616,12 +607,9 @@ void Ship::drawEngine(GLint nr)
     translateX = -0.25;
 
   glPushMatrix(); // Save matrix
-  glPushAttrib(GL_CURRENT_BIT); // Save color
 
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   // Set material properties
+  /*
   GLfloat mat_shininess[] = { 20.0 };
   GLfloat mat_ambient[] = { 1, 1, 1, 0.0 };
   GLfloat mat_diffuseColor[] = { 1, 1, 1, 0.0 };
@@ -630,13 +618,13 @@ void Ship::drawEngine(GLint nr)
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  */
 
   /* Draw cyliner */
   glTranslatef(translateX,
 	       -0.04,
 	       -0.1
 	       );
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, textureId);
   glRotatef(180, 0, 0, 10.0);
   gluCylinder(_shipEngine,
@@ -646,10 +634,11 @@ void Ship::drawEngine(GLint nr)
 	      12, //slices
 	      12  // stacks
 	      );
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_LIGHTING);
 
   /* Draw bottom disk "fumes" */
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
+  glPushAttrib(GL_CURRENT_BIT); // Save color
   glColor3f(_shipFumes,0.5*_shipFumes,0);
   glTranslatef(0.0,
 	       0.0,
@@ -661,13 +650,13 @@ void Ship::drawEngine(GLint nr)
 	  12, // slices
 	  12 // rings
 	  );
-
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  glEnable(GL_TEXTURE_2D);
+  glPopAttrib(); // Restore color
   
   /* Draw top disk */
-  //glEnable(GL_TEXTURE_2D);
-  //glBindTexture(GL_TEXTURE_2D, textureId);
+  glBindTexture(GL_TEXTURE_2D, textureId);
   glRotatef(180, 0, 10, 0.0);
   glColor3f(0.3,0.3,0.3);
   glTranslatef(0.0,
@@ -680,20 +669,15 @@ void Ship::drawEngine(GLint nr)
 	  12, // slices
 	  12 // rings
 	  );
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_LIGHTING);
 
   glPopMatrix(); // Restore matrix
-  glPopAttrib(); // Restore color
 }
 
 void Ship::drawWindshield()
 {
   glPushMatrix(); // Save matrix
-  glPushAttrib(GL_CURRENT_BIT); // Save color
 
   glEnable(GL_BLEND);
-  //glBlendFunc(GL_ZERO,GL_SRC_COLOR);
   glBlendFunc(GL_SRC_ALPHA,GL_SRC_COLOR);
 
   GLfloat mat_shininess[] = { 200.0 };
@@ -704,11 +688,8 @@ void Ship::drawWindshield()
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  
 
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_TEXTURE_2D);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glBindTexture(GL_TEXTURE_2D, textureId2);
 
   double clip_plane1[]={0.0, 1.0, 0.0, 0};
@@ -716,7 +697,6 @@ void Ship::drawWindshield()
   glEnable(GL_CLIP_PLANE1);
 
   // Draw Sphere "windshield"
-  glColor4f(0.9,0,0,0.9);
   glTranslatef(0.0,0.0,-0.20);
 
   gluSphere(_shipWindshield, 0.27, 16, 16);
@@ -726,18 +706,13 @@ void Ship::drawWindshield()
 
   glDisable(GL_BLEND);
 
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_LIGHTING);
-
   glPopMatrix(); // Restore matrix
-  glPopAttrib(); // Restore color
 
 }
 
 void Ship::printHighscore()
 {
   glPushMatrix(); // Save matrix
-  glPushAttrib(GL_CURRENT_BIT); // Save color
 
   string text = "Highscore: ";
   
@@ -749,13 +724,12 @@ void Ship::printHighscore()
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, s[i]);
 
   glPopMatrix(); // Restore matrix
-  glPopAttrib(); // Restore color
 
 }
 
 GLuint Ship::loadTexture(char* name)
 {
-   GLuint texNum;
+  GLuint texNum;
   int width = 0, height = 0;
   char* pixelData = 0;
   int nameLen = strlen(name);
