@@ -47,13 +47,11 @@ Ship::Ship(Camera* cam)
   /**
    ** Helper variables
    **/
-  _location[0] =  _location[1] = 0.0;
-  _location[2] = 0.0;
+  _location[0] =  _location[1] =  _location[2] = 0.0;
   _locationOfFront[0] =  _locationOfFront[1] = 0.0;
   _locationOfFront[2] = -0.5;
 
-  _jumpDestinationZ = 0.0;
-  _wiggleX = _shipAngleX = 0.0;
+  _jumpDestinationZ = _wiggleX = _shipAngleX = 0.0;
 
   _moving = _turning = _jumping = _wiggle = _wiggleToRight
     = _falling = false;
@@ -95,7 +93,6 @@ void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 
   if ( _warping == false && _intro == false)
     {
-
       /* First: Change internal variables, do not rotate or translate yet */
       if (blockType == 4)
 	{
@@ -103,7 +100,7 @@ void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 	}
       else if (blockType == 3)
 	{
-	  jumpLength = _jumpLengthOriginal + (_jumpLengthOriginal/5);
+	  jumpLength = _jumpLengthOriginal + (_jumpLengthOriginal*0.2);
 	}
       else
 	jumpLength = _jumpLengthOriginal;
@@ -159,8 +156,7 @@ void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 	      _currentSpeed = _currentSpeed + 0.001;
 	    }
 
-	  // Move forward
-	  // _location[2] = _location[2] - _currentSpeed; OLD
+	  // Move forward & up
 	  _location[1] = _location[1] + (_currentSpeed * tan(blockAngle * (M_PI/180)));
 	  _location[2] = _location[2] - _currentSpeed; // Speed is constant
 
@@ -168,8 +164,6 @@ void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
 	    _shipFumes += 0.01;
 
 	  _highscore += 0.01;
-
-	  //_location[2] = _location[2] - (_currentSpeed * cos(blockAngle*(M_PI/180))); // Speed is dependant on angle
 	}
     }
   else if (_warping == true)
@@ -231,7 +225,7 @@ GLdouble* Ship::getPosition()
 {
   _locationOfFront[0] = _location[0];
   _locationOfFront[1] = _location[1];
-  _locationOfFront[2] = _location[2];// - 0.5;
+  _locationOfFront[2] = _location[2];
 
   return _locationOfFront;
 }
@@ -244,13 +238,11 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
 {
   _falling = false;
 
-  // Update die variable
-  if (blockDistance != 0.0)
+  if (blockDistance != 0.0) // Update die variable
     hereWeDie = blockDistance - 20.0;
 
-  // Are we falling down?
-  if (((blockDistance >= 0.7) || (blockDistance == 0)) 
-      && (!_jumping) 
+  if (((blockDistance >= 0.7) || (blockDistance == 0)) // Are we falling down?
+      && (!_jumping)   
       /*&& (blockAngle == 0)*/)
     {
       _location[1] = _location[1] - 0.10;
@@ -258,9 +250,7 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
       if (_jumpAngleX > -50)
 	_jumpAngleX--;
     }
-
-  // Keep ship near block!
-  else if (blockDistance < 0.5)
+  else if (blockDistance < 0.5) // Keep ship near block!
     {
 	 _location[1] += 0.01;
       if ((_jumpAngleX < 0) && !_jumping)
@@ -270,27 +260,23 @@ void Ship::gravity(GLdouble blockDistance, GLdouble blockAngle)
 	   && (blockDistance < 0.7)
 	   && (!_jumping))
     {
-	 //_location[1] -= 0.01;
       if (_jumpAngleX < 0)
 	_jumpAngleX += 2;
     }
 
-  
-  if (blockDistance >= -0.15
-      && blockDistance < 0.00)
-    _location[1] += 0.15;
+  if (blockDistance >= -0.15   // Fixes a problem where you suddenly die
+      && blockDistance < 0.00) // for no reason. Should probably fix 
+    _location[1] += 0.15;      // this proberly
   
 
   // Are we dead?
   if ( (blockDistance < -0.15))
     {
-      cout << "You died because: blockDistance = " << blockDistance << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
   else if (_location[1] < hereWeDie)
     {
-      cout << "You died because: You fell down." << endl;
       _camera->slowZ = true;
       new (this)Ship(_camera);
     }
@@ -301,12 +287,12 @@ void Ship::jump()
   GLint jumpAngleMax = 30;
 
   // Calculate the relative distance we have left in our jump
-  GLdouble distanceFactor = fabs((_location[2] - _jumpOrigin) / _jumpDestinationZ);
+  GLdouble distanceFactor = 
+    fabs((_location[2] - _jumpOrigin) / _jumpDestinationZ);
   GLdouble jumpHeight;
 
   if (distanceFactor <= 0.50)
     {
-      //jumpHeight = _currentSpeed - (_currentSpeed * sin(distanceFactor * M_PI));
       jumpHeight = (0.10 - (_currentSpeed * sin(distanceFactor * M_PI)))/2;
       _location[1] = _location[1] + jumpHeight;
 
@@ -332,35 +318,12 @@ void Ship::jump()
 	if (_shipFumes > 0.5)
 	  _shipFumes -= 0.05;
 	}
-
     }
-
-
-     /*
-      else if ((_jumpAngleX > (-jumpAngleMax))
-	  && (distanceFactor >= 0.800)
-	  && (distanceFactor < 0.900))
-	{
-	  _jumpAngleX -= 1;
-	}
-      else if ((_jumpAngleX < 0)
-	       && (distanceFactor >= 0.900))
-	{
-	  _jumpAngleX += 1;
-	  if(_jumpAngleX > 0)
-	    _jumpAngleX = 0;
-
-	  cout << _jumpAngleX << endl;
-	}
-      */
-
-    
   else
     {
       _jumping = false;
       _jumpAngleX = 0;
       _location[1] -= 0.08;
-      //cout << "End: " << _location[1] << endl;
     } 
 }
 
@@ -516,7 +479,9 @@ void Ship::warp()
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
 
-  _camera->LookAtThis(_location[0],_location[1], (_location[2] - (_warpCounter*0.2)));
+  _camera->LookAtThis(_location[0],
+		      _location[1], 
+		      (_location[2] - (_warpCounter*0.2)));
 
   if (_warpCounter >= 30)
     {
@@ -531,9 +496,7 @@ void Ship::intro()
   if(_location[2] > 0)
     {
       if((_location[2] <= 30) && (_location[2] > 20))
-	{
 	  _location[2] = _location[2] - 0.5;
-	}
       else if((_location[2] <= 20) && (_location[2] > 5))
 	{
 	  _camera->still = false;
@@ -545,9 +508,7 @@ void Ship::intro()
 	  _shipFumes -= 0.02;
 	}
       else
-	{
 	  _location[2] = _location[2] - 0.5;
-	}
 
       hover();
 
@@ -602,18 +563,6 @@ void Ship::drawEngine(GLint nr)
 
   glPushMatrix(); // Save matrix
 
-  // Set material properties
-  /*
-  GLfloat mat_shininess[] = { 20.0 };
-  GLfloat mat_ambient[] = { 1, 1, 1, 0.0 };
-  GLfloat mat_diffuseColor[] = { 1, 1, 1, 0.0 };
-  GLfloat mat_specularColor[] = { 1, 1, 1, 0.0 };
-  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
-  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-  */
-
   /* Draw cyliner */
   glTranslatef(translateX,
 	       -0.04,
@@ -633,6 +582,7 @@ void Ship::drawEngine(GLint nr)
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_LIGHTING);
   glPushAttrib(GL_CURRENT_BIT); // Save color
+
   glColor3f(_shipFumes,0.5*_shipFumes,0);
   glTranslatef(0.0,
 	       0.0,
@@ -644,6 +594,7 @@ void Ship::drawEngine(GLint nr)
 	  12, // slices
 	  12 // rings
 	  );
+
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glEnable(GL_TEXTURE_2D);
@@ -682,7 +633,6 @@ void Ship::drawWindshield()
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-  
 
   glBindTexture(GL_TEXTURE_2D, textureId2);
 
@@ -737,14 +687,6 @@ GLuint Ship::loadTexture(char* name)
     {
       read_JPEG_file(name, &pixelData, &width, &height);
     }
-  /* We dont need PPM, less things to worry about
-
-  else if (nameLen >= 4 && (!strcmp(name + nameLen - 4, ".ppm")
-			    || !strcmp(name + nameLen - 4, ".PPM")))
-    {
-      pixelData = readppm(name, &width, &height);
-    }
-  */
 
   if (!pixelData)
     exit(0);
@@ -752,16 +694,12 @@ GLuint Ship::loadTexture(char* name)
   glGenTextures(1, &texNum);
   glBindTexture(GL_TEXTURE_2D, texNum);
   gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixelData);
-  /*glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
-    GL_RGB, GL_UNSIGNED_BYTE, pixelData);*/
 
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   free(pixelData);
 

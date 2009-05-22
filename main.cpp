@@ -93,7 +93,6 @@ void display()
 
   skyBox->drawSkyBox(Cam->getLocation());
 
-
   // Apply standard lighting
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -112,8 +111,6 @@ void display()
 		      collision->getAngle(),
 		      collision->getBlockBelowType());
   
-  //Cam->LookAtThis(0.0,0.0,0.0);
-
   // Swap front- and backbuffers
   glutSwapBuffers();
 }
