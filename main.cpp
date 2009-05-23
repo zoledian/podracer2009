@@ -97,7 +97,7 @@ void display()
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   lighting->setStandard();
-  loadLevel->drawLevel();
+  loadLevel->drawLevel(Cam);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
   

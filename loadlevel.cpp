@@ -10,6 +10,7 @@
 #include <sstream>
 #include "readjpeg.h"
 #include "stdlib.h"
+#include "camera.h"
 using namespace std;
 
 LoadLevel::LoadLevel(string name)
@@ -190,29 +191,38 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 }
 
 // Draw the blocks in the level
-void LoadLevel::drawLevel()
+void LoadLevel::drawLevel(Camera* cam)
 {
+  GLdouble* camLocation = cam->getLocation();
+  GLdouble* blockLocation;
 
   for(unsigned int i = 0; i < blocks_.size(); i++)
     {
-      glPushMatrix();
-      glPushAttrib(GL_CURRENT_BIT); // Save color
+      blockLocation = blocks_[i]->getCoord();
 
-      if (blocks_[i]->getType() == 2)
+      // Only draw blocks when they are between z = 2 > camera > -75
+      if ((blockLocation[2] < (camLocation[2] + 2))
+	  && (blockLocation[2] > (camLocation[2] - 75)))
 	{
-	  glEnable(GL_TEXTURE_2D);
-
-	  glBindTexture(GL_TEXTURE_2D, textureId_);  
-  
-	  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	  glPushMatrix();
+	  glPushAttrib(GL_CURRENT_BIT); // Save color
 	  
-	  blocks_[i]->draw();
-
-	  glDisable(GL_TEXTURE_2D);
-
+	  if (blocks_[i]->getType() == 2)
+	    {
+	      glEnable(GL_TEXTURE_2D);
+	      
+	      glBindTexture(GL_TEXTURE_2D, textureId_);  
+	      
+	      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	      
+	      blocks_[i]->draw();
+	      
+	      glDisable(GL_TEXTURE_2D);
+	      
+	    }
+	  else
+	    blocks_[i]->draw();
 	}
-      else
-	blocks_[i]->draw();
 
       glPopMatrix();
       glPopAttrib(); // Restore color
