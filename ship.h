@@ -31,6 +31,7 @@ class Ship {
   void drawWindshield();
 
   void printHighscore();
+  void printLevelComplete();
 
   GLuint loadTexture(char* name);
 

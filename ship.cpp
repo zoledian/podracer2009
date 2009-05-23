@@ -483,6 +483,9 @@ void Ship::warp()
 		      _location[1], 
 		      (_location[2] - (_warpCounter*0.2)));
 
+  if (_warpCounter >= 10)
+    printLevelComplete();
+
   if (_warpCounter >= 30)
     {
       readyForNextLevel = true;
@@ -671,6 +674,26 @@ void Ship::printHighscore()
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color
 
+}
+
+void Ship::printLevelComplete()
+{
+  glPushMatrix(); // Save matrix
+  glPushAttrib(GL_CURRENT_BIT); // Save color
+
+  GLdouble* camLocation = _camera->getLocation();
+
+  glRasterPos3f(camLocation[0] -0.5,
+		camLocation[1] -1,
+		camLocation[2] -1);
+
+  string s = "Level Complete";
+  
+  for ( unsigned int i = 0; i < s.length(); i++)
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, s[i]);
+
+  glPopMatrix(); // Restore matrix
+  glPopAttrib(); // Restore color
 }
 
 GLuint Ship::loadTexture(char* name)
