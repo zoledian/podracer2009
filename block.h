@@ -16,6 +16,8 @@ public:
      double* getCoord();
 
 private:
+     void init();
+     GLuint cubeList_;
      GLfloat red_;
      GLfloat green_;
      GLfloat blue_;

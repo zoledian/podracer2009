@@ -15,8 +15,54 @@ Block::Block()
      {
 	  coord_[i] = 0;
      }
+
+     init();
 }
 
+void Block::init()
+{
+  // Create a display list for a cube
+  cubeList_ = glGenLists(1);
+  glNewList(cubeList_,GL_COMPILE); 
+  glPushMatrix();
+  {
+    glBegin(GL_QUAD_STRIP);
+    // Sides
+    glNormal3f(1,0,0);
+    glTexCoord2f(0.0, 1.0); glVertex3f( 0.5, 0.5, 0.5);
+    glTexCoord2f(0.0, 0.0); glVertex3f( 0.5,-0.5, 0.5);
+    glTexCoord2f(1.0, 1.0); glVertex3f( 0.5, 0.5,-0.5);
+    glTexCoord2f(1.0, 0.0); glVertex3f( 0.5,-0.5,-0.5);
+    glNormal3f(0,0,-1);
+    glTexCoord2f(2.0, 1.0); glVertex3f(-0.5, 0.5,-0.5);
+    glTexCoord2f(2.0, 0.0); glVertex3f(-0.5,-0.5,-0.5);
+    glNormal3f(-1,0,0);
+    glTexCoord2f(3.0, 1.0); glVertex3f(-0.5, 0.5, 0.5);
+    glTexCoord2f(3.0, 0.0); glVertex3f(-0.5,-0.5, 0.5);
+    glNormal3f(0,0,1);
+    glTexCoord2f(4.0, 1.0); glVertex3f( 0.5, 0.5, 0.5);
+    glTexCoord2f(4.0, 0.0); glVertex3f( 0.5,-0.5, 0.5);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    // Top
+    glNormal3f(0,1,0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-0.5, 0.5,-0.5);
+    glTexCoord2f(0.0, 0.0); glVertex3f(-0.5, 0.5, 0.5);
+    glTexCoord2f(1.0, 0.0); glVertex3f( 0.5, 0.5, 0.5);
+    glTexCoord2f(1.0, 1.0); glVertex3f( 0.5, 0.5,-0.5);
+    // Bottom
+    glNormal3f(0,-1,0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-0.5,-0.5, 0.5);
+    glTexCoord2f(0.0, 0.0); glVertex3f(-0.5,-0.5,-0.5);
+    glTexCoord2f(1.0, 0.0); glVertex3f( 0.5,-0.5,-0.5);
+    glTexCoord2f(1.0, 1.0); glVertex3f( 0.5,-0.5, 0.5);
+    glEnd();
+  }
+  glPopMatrix();
+  glEndList(); 
+
+}
 
 void Block::setColor(GLfloat red, GLfloat green, GLfloat blue)
 {
@@ -38,15 +84,15 @@ void Block::draw()
      
 	  glPolygonMode(GL_FRONT,GL_FILL);
 
-
 	  // Translate to the right coordinates and rotate
 	  glTranslatef(coord_[0],coord_[1],coord_[2]);
 	  glRotatef(angle_,1,0,0);
-	  //glutSolidCube(1);
 	  glTranslatef(0,0.4,0);
 	  glScalef(1,0.2,1.0);
-	  
 
+	  glCallList(cubeList_);
+	  
+	  /*
 	  // Draw block
 	  // Front side
 	  glBegin(GL_POLYGON);
@@ -125,6 +171,7 @@ void Block::draw()
 	  glTexCoord2f(0, 1);
 	  glVertex3f(-0.5, -0.5, -0.5);
 	  glEnd();
+	  */
 
      }
      else if(type_ == 3) // Jump block
@@ -141,7 +188,8 @@ void Block::draw()
 	  glTranslatef(0,0.4,0);
 	  glScalef(1,0.2,1.0);
 	  
-	  glutSolidCube(1);	
+	  glCallList(cubeList_);
+	  //glutSolidCube(1);	
 
 	  glEnable(GL_LIGHTING); 
      }
@@ -153,7 +201,7 @@ void Block::draw()
 	  // Translate to the right coordinates and rotate
 	  glTranslatef(coord_[0],coord_[1],coord_[2]);
 	  glRotatef(angle_,1,0,0);
-	  glutSolidCube(1);
+	  glCallList(cubeList_);
 	  
      }
 
