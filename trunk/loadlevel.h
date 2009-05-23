@@ -1,6 +1,7 @@
 #ifndef LOADLEVEL_H
 #define LOADLEVEL_H
 #include "block.h"
+#include "camera.h"
 #include <vector>
 
 class LoadLevel {
@@ -8,7 +9,7 @@ public:
      LoadLevel(std::string);
      ~LoadLevel();
      void loadNewLevel(std::string, int);
-     void drawLevel();
+     void drawLevel(Camera*);
      std::vector<Block*> getLevelVector();
      
 private:
