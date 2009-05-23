@@ -197,19 +197,21 @@ void LoadLevel::drawLevel(Camera* cam)
 
   GLdouble* blockLocation;
 
+  GLint drawDistance = 75;
+
   for(unsigned int i = 0; i < blocks_.size(); i++)
     {
       blockLocation = blocks_[i]->getCoord();
 
-      // Only draw blocks when they are between z = 2 > camera > -75
+      // Only draw blocks when they are visible
       if (((blockLocation[2] < (camLocation[2] + 2))
-	   && (blockLocation[2] > (camLocation[2] - 75))
+	   && (blockLocation[2] > (camLocation[2] - drawDistance))
 	   && (cam->slowZ == false))
 	  || ((cam->slowZ == true) && (cam->turning == false)
-	      && (blockLocation[2] > (camLocation[2] - 20))
-	      && (blockLocation[2] < (camLocation[2] + 75)))
+	      && (blockLocation[2] > (camLocation[2] - 10))
+	      && (blockLocation[2] < (camLocation[2] + drawDistance)))
 	  || ((cam->slowZ == true) && (cam->turning == true)
-	      && (blockLocation[2] > -75)))
+	      && (blockLocation[2] > -drawDistance)))
 	  
 	{
 	  glPushMatrix();
