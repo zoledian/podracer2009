@@ -74,7 +74,7 @@ void ParticleSystem::draw()
 
   // Make the fire begin behind the engine
   glTranslatef(0,0,0.05);
-
+	
   glDisable(GL_LIGHTING);
   glDisable(GL_DEPTH_TEST); // Disables Depth Testing
   glClearColor(0.0f,0.0f,0.0f,0.0f); // Black Background
@@ -97,11 +97,17 @@ void ParticleSystem::draw()
 	  glColor4f(particles[i].r,particles[i].g,particles[i].b,particles[i].life);
 	  
 	  glBegin(GL_TRIANGLE_STRIP); // Build Quad From A Triangle Strip
-	  
 	  glVertex3f(x+0.01f,y+0.01f,z); // Top Right
 	  glVertex3f(x-0.01f,y+0.01f,z); // Top Left
 	  glVertex3f(x+0.01f,y-0.01f,z); // Bottom Right
 	  glVertex3f(x-0.01f,y-0.01f,z); // Bottom Left
+	  glEnd();
+
+	  glBegin(GL_TRIANGLE_STRIP); // Build Quad From A Triangle Strip
+	  glVertex3f(x+0.01f,y,z-0.01f); // Top Right
+	  glVertex3f(x-0.01f,y,z+0.01f); // Top Left
+	  glVertex3f(x+0.01f,y,z+0.01f); // Bottom Right
+	  glVertex3f(x-0.01f,y,z-0.01f); // Bottom Left
 	  glEnd();
 	  
 	  particles[i].x+=particles[i].xi/(slowdown*1000); // Move On The X Axis By X Speed

@@ -612,8 +612,7 @@ void Ship::drawEngine(GLint nr)
 	{
 	  flame1->activate();
 	  flame2->activate();
-	}
-      
+	}  
       // Draw flame corresponding to the engine currently being drawn
       if(nr == 1)
 	flame1->draw();
