@@ -93,15 +93,12 @@ void display()
   glShadeModel(GL_SMOOTH);
 
   skyBox->drawSkyBox(Cam->getLocation());
-  cout << "Skybox " << gluErrorString(glGetError()) << endl;
 
   // Apply standard lighting
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   lighting->setStandard();
-  cout << "Lighting " << gluErrorString(glGetError()) << endl;
   loadLevel->drawLevel(Cam);
-  cout << "Loadlevel " << gluErrorString(glGetError()) << endl;
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
   
@@ -110,13 +107,15 @@ void display()
   collision->setLevelVector(loadLevel->getLevelVector());
   collision->setShipxyz(Spaceship->getPosition());
   collision->findBlockBelow();
-  cout << "Collision " << gluErrorString(glGetError()) << endl;
 
   Spaceship->display(collision->getyDistance(), 
 		      collision->getAngle(),
 		      collision->getBlockBelowType());
   
-  cout << "Spaceship " << gluErrorString(glGetError()) << endl;
+
+  GLenum error = glGetError();
+  if (error != GL_NO_ERROR)
+    cout << "Error: " << gluErrorString(error) << endl;
 
   // Swap front- and backbuffers
   glutSwapBuffers();
