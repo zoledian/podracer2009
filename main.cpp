@@ -52,6 +52,7 @@ void inputNormKey(unsigned char key, int mouseX, int mouseY)
   else if (key == '\32' || key == 'm' || key == 'M')
     {
       Cam->slowZ = false;
+      Cam->turning = false;
       Spaceship->jumpShip();
     }
 }

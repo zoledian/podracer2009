@@ -14,6 +14,7 @@ Camera::Camera()
 
   slowZ = false;
   still = false;
+  turning = false;
 
 }
 
@@ -37,25 +38,6 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
       if (x > (1.05*_location[0]))
 	_location[0] = _location[0] + _speed;
 
-      // Make camera y pos lag
-      /*
-	double yTarget = _location[1] - 5;
-	cout << yTarget << "!" << endl;
-	cout << _location[1] << " -> ";
-	if ((y < 0.95*yTarget)
-	&& (y > (0.8*yTarget)))
-	_location[1] = _location[1] - 0.2*_speed;
-	else if ((y <= 0.8*yTarget))
-	_location[1] = _location[1] - 0.6*_speed;
-	else if ((y > 1.10*yTarget)
-	&& (y < (1.2*yTarget)))
-	_location[1] = _location[1] + 0.2*_speed;
-	else if ((y >= 1.2*yTarget))
-	_location[1] = _location[1] + 0.6*_speed;
-
-	cout << _location[1] << endl;
-      */
-
       _location[1] = y + 5;
 
 
@@ -68,11 +50,15 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 	  
 	  if ( (fabs( z - (_location[2] - 3.0)) < 20)
 	       && (fabs( z - (_location[2] - 3.0)) > 5))
-	    _location[0] = _location[0] + _speed*1.5;
-	  
+	    {
+	      turning = true;
+	      _location[0] = _location[0] + _speed*1.5;
+	    }
 	}
       else
+	{
 	_location[2] = z + 3.0;
+	}
     }
 
   glPushMatrix(); // Save matrix
