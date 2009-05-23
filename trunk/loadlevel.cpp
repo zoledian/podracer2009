@@ -200,7 +200,10 @@ void LoadLevel::drawLevel(Camera* cam)
   for(unsigned int i = 0; i < blocks_.size(); i++)
     {
       blockLocation = blocks_[i]->getCoord();
-
+      
+      glPushMatrix();
+      glPushAttrib(GL_CURRENT_BIT); // Save color
+      
       // Only draw blocks when they are visible
       if (((blockLocation[2] < (camLocation[2] + 2))
 	   && (blockLocation[2] > (camLocation[2] - drawDistance))
@@ -210,11 +213,8 @@ void LoadLevel::drawLevel(Camera* cam)
 	      && (blockLocation[2] < (camLocation[2] + drawDistance)))
 	  || ((cam->slowZ == true) && (cam->turning == true)
 	      && (blockLocation[2] > -drawDistance)))
-	  
-	{
-	  glPushMatrix();
-	  glPushAttrib(GL_CURRENT_BIT); // Save color
-	  
+	
+	{ 
 	  if (blocks_[i]->getType() == 2)
 	    {
 	      glEnable(GL_TEXTURE_2D);
@@ -231,7 +231,7 @@ void LoadLevel::drawLevel(Camera* cam)
 	  else
 	    blocks_[i]->draw();
 	}
-
+      
       glPopMatrix();
       glPopAttrib(); // Restore color
     }
