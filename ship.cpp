@@ -61,7 +61,6 @@ Ship::Ship(Camera* cam)
     = _wiggleAngle = 0;
 
   _currentSpeed = 0.001;
-
   _camera = cam;
   //_camera->reset();
   _camera->LookAtThis(_location[0],_location[1],_location[2]-80);
@@ -84,6 +83,7 @@ Ship::Ship(Camera* cam)
   _warpCounter = 0.0;
   _intro = true;
   _highscore = 0;
+
 
   // Particlesystem for engine
   flame1 = new ParticleSystem();
@@ -184,7 +184,6 @@ void Ship::drawShip()
   glEnable(GL_LIGHT0);
   glEnable(GL_TEXTURE_2D);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
   /* Draw ship */
   drawBody();
   drawEngine(1);
@@ -661,10 +660,11 @@ void Ship::drawWindshield()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA,GL_SRC_COLOR);
 
-  GLfloat mat_shininess[] = { 200.0 };
+  GLfloat mat_shininess[] = { 100.0 };
   GLfloat mat_ambient[] = { 10, 1, 1, 0.0 };
   GLfloat mat_diffuseColor[] = { 10, 0.1, 0.1, 0.0 };
   GLfloat mat_specularColor[] = { 10, 10, 10, 0.0 };
+  
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuseColor);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specularColor);
@@ -687,7 +687,6 @@ void Ship::drawWindshield()
   glDisable(GL_BLEND);
 
   glPopMatrix(); // Restore matrix
-
 }
 
 void Ship::printHighscore()
