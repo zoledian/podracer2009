@@ -194,6 +194,7 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 void LoadLevel::drawLevel(Camera* cam)
 {
   GLdouble* camLocation = cam->getLocation();
+
   GLdouble* blockLocation;
 
   for(unsigned int i = 0; i < blocks_.size(); i++)
@@ -201,8 +202,15 @@ void LoadLevel::drawLevel(Camera* cam)
       blockLocation = blocks_[i]->getCoord();
 
       // Only draw blocks when they are between z = 2 > camera > -75
-      if ((blockLocation[2] < (camLocation[2] + 2))
-	  && (blockLocation[2] > (camLocation[2] - 75)))
+      if (((blockLocation[2] < (camLocation[2] + 2))
+	   && (blockLocation[2] > (camLocation[2] - 75))
+	   && (cam->slowZ == false))
+	  || ((cam->slowZ == true) && (cam->turning == false)
+	      && (blockLocation[2] > (camLocation[2] - 20))
+	      && (blockLocation[2] < (camLocation[2] + 75)))
+	  || ((cam->slowZ == true) && (cam->turning == true)
+	      && (blockLocation[2] > -75)))
+	  
 	{
 	  glPushMatrix();
 	  glPushAttrib(GL_CURRENT_BIT); // Save color
