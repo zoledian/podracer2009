@@ -7,6 +7,7 @@
 #include <sstream>
 #include "readjpeg.h"
 #include "stdlib.h"
+#include "particlesystem.h"
 using namespace std;
 
 Ship::Ship(Camera* cam)
@@ -83,6 +84,10 @@ Ship::Ship(Camera* cam)
   _warpCounter = 0.0;
   _intro = true;
   _highscore = 0;
+
+  // Particlesystem for engine
+  flame1 = new ParticleSystem();
+  flame2 = new ParticleSystem();
 }
 
 void Ship::display(GLdouble blockDistance, GLdouble blockAngle, int blockType)
@@ -597,6 +602,35 @@ void Ship::drawEngine(GLint nr)
 	  12, // slices
 	  12 // rings
 	  );
+  
+  // Draw engine "flames"
+  
+  if(_moving == true)
+    {
+      // Activate flames if they are disabled
+      if(flame1->active == false || flame2->active == false)
+	{
+	  flame1->activate();
+	  flame2->activate();
+	}
+      
+      // Draw flame corresponding to the engine currently being drawn
+      if(nr == 1)
+	flame1->draw();
+      else
+	flame2->draw();
+    }
+  else
+    {
+      // Disable flames if they are disabled
+      if(flame1->active == true || flame2->active == true)
+	{
+	  flame1->disable();
+	  flame2->disable();
+	}
+    }
+    
+
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);

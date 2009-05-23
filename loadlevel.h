@@ -18,7 +18,6 @@ private:
 
      std::vector<Block*> blocks_;
      GLint textureId_;
-
 };
 
 #endif

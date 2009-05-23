@@ -1,4 +1,4 @@
-	OBJECTS :=  main.o camera.o block.o loadlevel.o skybox.o collision.o readjpeg.o ship.o lighting.o shaderutils.o
+	OBJECTS :=  main.o camera.o block.o loadlevel.o skybox.o collision.o readjpeg.o ship.o lighting.o shaderutils.o particle.o particlesystem.o
 CC = g++ -g -Wall 
 name = podracer2009
 version = 0.1
@@ -35,6 +35,12 @@ shaderutils.o : shaderutils.c shaderutils.h
 
 lighting.o : lighting.cpp lighting.h
 	$(CC)  -c lighting.cpp
+
+particle.o : particle.cpp particle.h
+	$(CC)  -c particle.cpp
+
+particlesystem.o : particlesystem.cpp particlesystem.h
+	$(CC)  -c particlesystem.cpp
 
 clean :
 	rm -Rf $(name)-$(version) $(OBJECTS)

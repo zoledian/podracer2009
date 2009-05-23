@@ -4,6 +4,7 @@
 #include "camera.h"
 #include <GL/glut.h>
 #include <math.h>
+#include "particlesystem.h"
 
 class Ship {
  public:
@@ -62,6 +63,10 @@ class Ship {
   GLboolean _falling;
   GLboolean _warping;
   GLboolean _intro;
+
+  // ParticleSystem for engines
+  ParticleSystem* flame1;
+  ParticleSystem* flame2;
 
   // Misc
   GLboolean _wiggleToRight;

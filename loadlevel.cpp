@@ -194,9 +194,7 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 void LoadLevel::drawLevel(Camera* cam)
 {
   GLdouble* camLocation = cam->getLocation();
-
   GLdouble* blockLocation;
-
   GLint drawDistance = 75;
 
   for(unsigned int i = 0; i < blocks_.size(); i++)
