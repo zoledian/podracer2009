@@ -47,12 +47,6 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 
   if (still == false)
     {
-      // Make the camera lag behind a bit when moving in x
-      if (x < (0.95*location_[0]))
-	location_[0] = location_[0] - speed_;
-      if (x > (1.05*location_[0]))
-	location_[0] = location_[0] + speed_;
-
       location_[1] = y + 5;
 
       // slowZ is active when you die and the camera pans back to start.
@@ -62,6 +56,11 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 	    location_[2] = location_[2] - speed_*2;
 	  if (z > (1.05 * (location_[2] - 3.0) ))
 	    location_[2] = location_[2] + speed_*2;
+
+	  if (x < (0.95*location_[0]))
+	    location_[0] = location_[0] - speed_;
+	  if (x > (1.05*location_[0]))
+	    location_[0] = location_[0] + speed_;
 	  
 	  // Go around the spaceship, not over
 	  if ( (fabs( z - (location_[2] - 3.0)) < 20)
@@ -74,6 +73,7 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
       else
 	{
 	  location_[2] = z + 3.0;
+	  location_[0] = x;
 	}
     }
 
