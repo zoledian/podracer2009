@@ -210,6 +210,8 @@ void Ship::jumpShip()
     {
       _moving = true;
       _location[0] = _location[1] = _location[2] = 0.00;
+      _camera->still = false;
+      _camera->slowZ = false;
       return;
     }
   else if (_jumping == false && _falling == false)
@@ -604,7 +606,7 @@ void Ship::drawEngine(GLint nr)
   
   // Draw engine "flames"
   
-  if(_moving == true)
+  if(_moving == true || _intro == true)
     {
       // Activate flames if they are disabled
       if(flame1->active == false || flame2->active == false)
@@ -615,17 +617,11 @@ void Ship::drawEngine(GLint nr)
       // Draw flame corresponding to the engine currently being drawn
       if(nr == 1)
 	{
-	  if (_jumping)
-	    flame1->draw(1000);
-	  else
-	    flame1->draw(400);
+	    flame1->draw(_shipFumes*1000);
 	}
       else
 	{
-	  if (_jumping)
-	    flame2->draw(1000);
-	  else
-	    flame2->draw(300);
+	    flame2->draw(_shipFumes*1000);
 	}
     }
   else
