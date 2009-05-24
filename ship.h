@@ -37,66 +37,65 @@ class Ship {
   GLuint loadTexture(char* name);
 
   /* Ship objects */
-  GLUquadricObj* _shipBody;
-  GLUquadricObj* _shipWindshield;
-  GLUquadricObj* _shipEngine;
-  GLUquadricObj* _shipEngineBack;
+  GLUquadricObj* shipBody_;
+  GLUquadricObj* shipWindshield_;
+  GLUquadricObj* shipEngine_;
+  GLUquadricObj* shipEngineBack_;
 
   /* Physics variables */
-  GLdouble jumpLength;
-  GLdouble hoverHeight;
-  GLdouble velocity;
-  GLdouble turnSpeed;
+  GLdouble jumpLength_;
+  GLdouble hoverHeight_;
+  GLdouble velocity_;
+  GLdouble turnSpeed_;
 
   /* Helper variables */
   // Ship specific
-  GLdouble _location[3];
-  GLdouble _locationOfFront[3];
-  GLint _cubeNr; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
-  GLdouble _shipAngleX;
+  GLdouble location_[3];
+  GLint cubeNr_; // Cube we are standing on (x-wise) 0 = middle -2 = leftmost
+  GLdouble shipAngleX_;
 
   // States
-  GLboolean _moving;
-  GLboolean _jumping;
-  GLboolean _turning;
-  GLboolean _wiggle;
-  GLboolean _falling;
-  GLboolean _warping;
-  GLboolean _intro;
+  GLboolean moving_;
+  GLboolean jumping_;
+  GLboolean turning_;
+  GLboolean wiggling_;
+  GLboolean falling_;
+  GLboolean warping_;
+  GLboolean intro_;
 
   // ParticleSystem for engines
-  ParticleSystem* flame1;
-  ParticleSystem* flame2;
+  ParticleSystem* flame1_;
+  ParticleSystem* flame2_;
 
   // Misc
-  GLboolean _wiggleToRight;
-  GLint _wiggleAngle;
-  GLdouble _wiggleX;
-  GLint _wiggleCounter;
+  GLboolean wiggleToRight_;
+  GLint wiggleAngle_;
+  GLdouble wiggleX_;
+  GLint wiggleCounter_;
 
-  GLdouble _hoverY;
-  GLint _hoverCounter;
+  GLdouble hoverY_;
+  GLint hoverCounter_;
 
-  GLint _turnAngle;
+  GLint turnAngle_;
 
-  GLint _jumpAngleX;
-  GLdouble _jumpDestinationZ;
+  GLint jumpAngleX_;
+  GLdouble jumpDestination_;
 
-  GLdouble _currentSpeed;
+  GLdouble currentSpeed_;
 
-  Camera* _camera;
+  Camera* camera_;
 
   GLuint textureId;
   GLuint textureId2;
 
-  GLdouble hereWeDie; // FIXME
+  GLdouble hereWeDie_;
 
-  GLdouble _jumpOrigin;
-  GLdouble _jumpLengthOriginal;
+  GLdouble jumpOrigin_;
+  GLdouble jumpLengthOriginal_;
 
-  GLdouble _shipFumes;
-  GLdouble _warpCounter;
-  GLdouble _highscore;
+  GLdouble shipFumes_;
+  GLdouble warpCounter_;
+  GLdouble highscore_;
 
 };
 
