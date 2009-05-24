@@ -6,14 +6,21 @@ using namespace std;
 
 Camera::Camera()
 {
-  _speed = 0.05;
+  speed_ = 0.05;
 
-  _location[0] = 0.0;
-  _location[1] = 0.0;
-  _location[2] = 0.0;
+  location_[0] = 0.0;
+  location_[1] = 0.0;
+  location_[2] = 0.0;
 
+  // slowZ indicates whether to travel slowly (such when you die) 
+  // or instantanious (normal gameplay)
   slowZ = false;
+
+  // still indicates whether the camera should stand still 
   still = false;
+
+  // turning indicates that the camera is turning, which is used by 
+  // loadlevel to determine which blocks to draw
   turning = false;
 
   aspectRatio_ = 1;
@@ -22,9 +29,9 @@ Camera::Camera()
 
 void Camera::reset()
 {
-  _location[0] = 5.0;
-  _location[1] = 5.0;
-  _location[2] = 10.0;
+  location_[0] = 5.0;
+  location_[1] = 5.0;
+  location_[2] = 10.0;
 }
 
 void Camera::updateAspect(double width, double height)
@@ -40,53 +47,46 @@ void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 
   if (still == false)
     {
-      if (x < (0.95*_location[0]))
-	_location[0] = _location[0] - _speed;
-      if (x > (1.05*_location[0]))
-	_location[0] = _location[0] + _speed;
+      // Make the camera lag behind a bit when moving in x
+      if (x < (0.95*location_[0]))
+	location_[0] = location_[0] - speed_;
+      if (x > (1.05*location_[0]))
+	location_[0] = location_[0] + speed_;
 
-      _location[1] = y + 5;
+      location_[1] = y + 5;
 
-
+      // slowZ is active when you die and the camera pans back to start.
       if (slowZ)
 	{
-	  if (z < (0.95 * (_location[2] - 3.0) ))
-	    _location[2] = _location[2] - _speed*2;
-	  if (z > (1.05 * (_location[2] - 3.0) ))
-	    _location[2] = _location[2] + _speed*2;
+	  if (z < (0.95 * (location_[2] - 3.0) ))
+	    location_[2] = location_[2] - speed_*2;
+	  if (z > (1.05 * (location_[2] - 3.0) ))
+	    location_[2] = location_[2] + speed_*2;
 	  
-	  if ( (fabs( z - (_location[2] - 3.0)) < 20)
-	       && (fabs( z - (_location[2] - 3.0)) > 5))
+	  // Go around the spaceship, not over
+	  if ( (fabs( z - (location_[2] - 3.0)) < 20)
+	       && (fabs( z - (location_[2] - 3.0)) > 5))
 	    {
 	      turning = true;
-	      _location[0] = _location[0] + _speed*1.5;
+	      location_[0] = location_[0] + speed_*1.5;
 	    }
 	}
       else
 	{
-	_location[2] = z + 3.0;
+	  location_[2] = z + 3.0;
 	}
     }
-
-  /*
-  glPushMatrix(); // Save matrix
-  glPushAttrib(GL_CURRENT_BIT); // Save color
-  */
 
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
-  gluLookAt(_location[0], _location[1], _location[2],
+  gluLookAt(location_[0], location_[1], location_[2],
 	    x, y, z-3,
 	    0, 1, 0);
-  /*
-  glPopMatrix(); // Restore matrix
-  glPopAttrib(); // Restore color
-  */
- 
+
 }
 
 GLdouble* Camera::getLocation()
 {
-  return _location;
+  return location_;
 }
