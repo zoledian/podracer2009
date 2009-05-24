@@ -66,7 +66,7 @@ void ParticleSystem::disable()
 
 }
 
-void ParticleSystem::draw()
+void ParticleSystem::draw(int nr)
 {
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -85,7 +85,7 @@ void ParticleSystem::draw()
   glHint(GL_POINT_SMOOTH_HINT,GL_NICEST); // Really Nice Point Smoothing
     
   // Loop through all particles
-  for (int i = 0; i < maxParticles; i++)			       
+  for (int i = 0; i < nr; i++)			       
     {
       if (particles[i].active) // If The Particle Is Active
 	{

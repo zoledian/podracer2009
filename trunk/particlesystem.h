@@ -11,7 +11,7 @@ class ParticleSystem{
   ParticleSystem();
   void activate();
   void disable();
-  void draw();
+  void draw(int);
   bool active;
 
  private:

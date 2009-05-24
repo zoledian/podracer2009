@@ -614,9 +614,19 @@ void Ship::drawEngine(GLint nr)
 	}  
       // Draw flame corresponding to the engine currently being drawn
       if(nr == 1)
-	flame1->draw();
+	{
+	  if (_jumping)
+	    flame1->draw(1000);
+	  else
+	    flame1->draw(400);
+	}
       else
-	flame2->draw();
+	{
+	  if (_jumping)
+	    flame2->draw(1000);
+	  else
+	    flame2->draw(300);
+	}
     }
   else
     {
@@ -748,13 +758,17 @@ GLuint Ship::loadTexture(char* name)
 
   glGenTextures(1, &texNum);
   glBindTexture(GL_TEXTURE_2D, texNum);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixelData);
+  // glubuild2dmipmaps is bad, handled by cpu
+  //gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixelData);
 
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  // Following two lines makes mipmaps be created by gpu
+  glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelData); 
 
   free(pixelData);
 
