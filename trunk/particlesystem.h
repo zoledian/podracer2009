@@ -17,10 +17,10 @@ class ParticleSystem{
  private:
   int maxParticles;
   float	slowdown; // Slow Down Particles
-  float	xspeed; // Base X Speed
-  float	yspeed; // Base Y Speed  
-  GLuint	col; // Current Color Selection
-  particle particles[1000]; // Particle Array (Room For Particle Info)
+  float	xspeed;
+  float	yspeed; 
+  GLuint col; // Current Color Selection
+  particle particles[1000]; // Particle Array
   GLfloat colors[12][3];
 };
 
