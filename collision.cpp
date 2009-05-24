@@ -53,58 +53,6 @@ void Collision::findBlockBelow()
 
      int searchA = level_.size() -1;
      int searchB = 0;
-
-     /* SPEED OPTIMIZED, BUT WITH BUGS!!! */
-     /*    // Find the closest block that is below xyz_
-     while((searchB - searchA) > 1)
-     {
-	  cout << "searchA: " << searchA << endl;
-	  cout << "searchB: " << searchB << endl;
-
-	  // Search in the half the wanted block is in
-	  if(xyz_[2] > ((level_[(searchA + searchB) / 2]->getCoord()[2]))) // Find Z
-	  {
-	       searchB = ((searchA + searchB) / 2);
-	  }
-	  else if(xyz_[2] < ((level_[(searchA + searchB) / 2]->getCoord()[2])))
-	  {
-	       searchA = ((searchA + searchB) / 2);
-	  }
-	  else if(xyz_[0] < ((level_[(searchA + searchB) / 2]->getCoord()[0]))) // Find X
-	  {
-	       searchB = ((searchA + searchB) / 2);
-	  }
-	  else if(xyz_[0] > ((level_[(searchA + searchB) / 2]->getCoord()[0])))
-	  {
-	       searchA = ((searchA + searchB) / 2);
-	  }
-	  else
-	  {
-	       searchA = (searchA + searchB) / 2;
-	       searchB = (searchA + searchB) / 2;		    
-	       }
-	       }*/
-
-/* USED WITH OPTIMIZED SEARCH, BUGGY */
-/*    // Check if we've found a block and return
-     if( abs(level_[searchA]->getCoord()[2] - xyz_[2]) <= 0.5 && 
-	 abs(level_[searchA]->getCoord()[0] - xyz_[0]) <= 0.5 )
-     {
-	  angle_ = level_[searchA]->getAngle();
-	  yDistance_ = ( xyz_[1] - level_[searchA]->getCoord()[1]  );
-     }
-     else if( abs(level_[searchB]->getCoord()[2] - xyz_[2]) <= 0.5 && 
-	      abs(level_[searchB]->getCoord()[0] - xyz_[0]) <= 0.5 )
-     {
-	  angle_ = level_[searchB]->getAngle();
-	  yDistance_ = ( xyz_[1] - level_[searchB]->getCoord()[1]  );
-     }
-     else
-     {
-	  angle_ = 0;
-	  yDistance_ = 0;
-	  }*/
-     
      bool found = false;
 
      // Since blockBelowIndex_ is used to index a vector
@@ -128,6 +76,7 @@ void Collision::findBlockBelow()
      }
 
 
+     // Find block below the ship
      while(searchA >= searchB && found == false)
      {
 	  blockAngle = level_[searchA]->getAngle();
@@ -187,6 +136,7 @@ int Collision::getBlockBelowType()
   return blockBelowType_;
 }
 
+// Y-distance from ship to block
 void Collision::setYdistance()
 {
   if(blockBelowIndex_ != -1)

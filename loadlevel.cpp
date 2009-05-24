@@ -58,7 +58,7 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 	int height = 0;
 
 	// Coordinates the next block should rotate around.
-	// Middle of block +0.5y -0.5z if angle = 0;
+	// That is "Middle of block" +0.5y -0.5z if angle = 0;
 	xyzRotatePos[0] = -2;
 	xyzRotatePos[1] = -1.5;
 	xyzRotatePos[2] = 0.5;
@@ -100,7 +100,7 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 		      xyzMiddle[1] = xyzRotatePos[1] + ((sqrt(2)/2) * sin((angle+45)*(M_PI/180)));
 		      xyzMiddle[2] = xyzRotatePos[2] - ((sqrt(2)/2) * cos((angle+45)*(M_PI/180)));	  
 
-		      // Calculate new x,y for neg x,y since it was rotated away
+		      // Calculate new y,z for positiv rotation since it was rotated away
 		      xyzRotateNeg[1] = xyzRotatePos[1] + sin((180-angle-90)*(M_PI/180));
 		      xyzRotateNeg[2] = xyzRotatePos[2] + cos((180-angle-90)*(M_PI/180));
 		    }
@@ -110,7 +110,7 @@ void LoadLevel::loadNewLevel(string name, int textureNr)
 		      xyzMiddle[1] = xyzRotateNeg[1] + ((sqrt(2)/2) * sin((angle-45)*(M_PI/180)));
 		      xyzMiddle[2] = xyzRotateNeg[2] - ((sqrt(2)/2) * cos((angle-45)*(M_PI/180)));
 
-		      // Calculate new x,y for neg x,y since it was rotated away
+		      // Calculate new y,z for negative rotation since it was rotated away
 		      xyzRotatePos[1] = xyzRotateNeg[1] - sin((180+angle-90)*(M_PI/180));
 		      xyzRotatePos[2] = xyzRotateNeg[2] + cos((180+angle-90)*(M_PI/180));
 		    }
@@ -270,6 +270,7 @@ GLuint LoadLevel::loadTexture(char* name)
   
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
   // Following two lines makes mipmaps be created by gpu
   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelData); 

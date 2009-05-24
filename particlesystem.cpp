@@ -37,8 +37,8 @@ ParticleSystem::ParticleSystem(){
   // No particles activated by default
   for (int i = 0 ;i < maxParticles ;i++)
     {
-      particles[i].active=false; // Make All The Particles Active
-      particles[i].life=-1.0f; // Give All The Particles Full Life
+      particles[i].active=false;
+      particles[i].life=-1.0f;
     }
 }
 
@@ -48,8 +48,8 @@ void ParticleSystem::activate()
   active = true;
   for (int i = 0 ;i < maxParticles ;i++)
     {
-      particles[i].active=true; // Make All The Particles Active
-      particles[i].life=-1.0f; // Give All The Particles Full Life
+      particles[i].active=true;
+      particles[i].life=-1.0f;
     }
 
 }
@@ -60,8 +60,8 @@ void ParticleSystem::disable()
   active = false;
   for (int i = 0 ;i < maxParticles ;i++)
     {
-      particles[i].active=false; // Make All The Particles Active
-      particles[i].life=-1.0f; // Give All The Particles Full Life
+      particles[i].active=false;
+      particles[i].life=-1.0f;
     }
 
 }
@@ -93,11 +93,11 @@ void ParticleSystem::draw(int nr)
   // Loop through all particles
   for (int i = 0; i < nr; i++)			       
     {
-      if (particles[i].active) // If The Particle Is Active
+      if (particles[i].active)
 	{
-	  float x=particles[i].x; // Grab Our Particle X Position
-	  float y=particles[i].y; // Grab Our Particle Y Position
-	  float z=particles[i].z; // Particle Z Pos
+	  float x=particles[i].x;
+	  float y=particles[i].y;
+	  float z=particles[i].z;
 	  	  
 	  // Draw The Particle Using Our RGB Values, Fade The Particle Based On It's Life
 	  glColor4f(particles[i].r - colorAdjust,
@@ -112,11 +112,11 @@ void ParticleSystem::draw(int nr)
 	  glVertex3f(x-0.01f,y-0.01f,z); // Bottom Left
 	  glEnd();
 
-	  glBegin(GL_TRIANGLE_STRIP); // Build Quad From A Triangle Strip
-	  glVertex3f(x+0.01f,y,z-0.01f); // Top Right
-	  glVertex3f(x-0.01f,y,z+0.01f); // Top Left
-	  glVertex3f(x+0.01f,y,z+0.01f); // Bottom Right
-	  glVertex3f(x-0.01f,y,z-0.01f); // Bottom Left
+	  glBegin(GL_TRIANGLE_STRIP); // Build Quad Lying Down From A Triangle Strip
+	  glVertex3f(x+0.01f,y,z-0.01f);
+	  glVertex3f(x-0.01f,y,z+0.01f);
+	  glVertex3f(x+0.01f,y,z+0.01f);
+	  glVertex3f(x-0.01f,y,z-0.01f);
 	  glEnd();
 	  
 	  particles[i].x+=particles[i].xi/(slowdown*1000); // Move On The X Axis By X Speed
@@ -128,7 +128,7 @@ void ParticleSystem::draw(int nr)
 	  if (particles[i].life<0.0f) // If Particle Is Burned Out
 	    {
 	      particles[i].life=1.0f; // Give It New Life
-	      particles[i].fade=float(rand()%100)/1000.0f+0.003f; // Random Fade Value
+	      particles[i].fade=float(rand()%100)/1000.0f+0.003f;
 
 	      particles[i].x = float(((rand()%54)-27.0f)/100);
 	      particles[i].y = float(((rand()%54)-27.0f)/100);
@@ -156,9 +156,6 @@ void ParticleSystem::draw(int nr)
 	}
       
     }
-
-  glEnable(GL_LIGHTING);
-  glEnable(GL_DEPTH_TEST); // Disables Depth Testing
 
   glPopMatrix(); // Restore matrix
   glPopAttrib(); // Restore color

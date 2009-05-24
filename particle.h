@@ -17,11 +17,6 @@ typedef struct
 	float	xi; // X Direction
 	float	yi; // Y Direction
 	float	zi; // Z Direction
-	float	xg; // X Gravity
-	float	yg; // Y Gravity
-	float	zg; // Z Gravity
-
-
 } particle;
 
 #endif
