@@ -15,8 +15,8 @@ class Camera {
   void updateAspect(double width, double height);
 
  private:
-  GLdouble _location[3];
-  GLdouble _speed;
+  GLdouble location_[3];
+  GLdouble speed_;
   double aspectRatio_;
 
 };
