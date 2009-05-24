@@ -68,6 +68,12 @@ void ParticleSystem::disable()
 
 void ParticleSystem::draw(int nr)
 {
+  GLdouble colorAdjust;
+  if (nr < 1000)
+    colorAdjust = 0.2;
+  else
+    colorAdjust = 0;
+
   glPushMatrix(); // Save matrix
   glPushAttrib(GL_ALL_ATTRIB_BITS);
   glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -94,7 +100,10 @@ void ParticleSystem::draw(int nr)
 	  float z=particles[i].z; // Particle Z Pos
 	  	  
 	  // Draw The Particle Using Our RGB Values, Fade The Particle Based On It's Life
-	  glColor4f(particles[i].r,particles[i].g,particles[i].b,particles[i].life);
+	  glColor4f(particles[i].r - colorAdjust,
+		    particles[i].g - colorAdjust,
+		    particles[i].b - colorAdjust,
+		    particles[i].life - colorAdjust);
 	  
 	  glBegin(GL_TRIANGLE_STRIP); // Build Quad From A Triangle Strip
 	  glVertex3f(x+0.01f,y+0.01f,z); // Top Right
