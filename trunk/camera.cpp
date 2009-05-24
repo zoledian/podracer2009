@@ -16,6 +16,8 @@ Camera::Camera()
   still = false;
   turning = false;
 
+  aspectRatio_ = 1;
+
 }
 
 void Camera::reset()
@@ -25,11 +27,16 @@ void Camera::reset()
   _location[2] = 10.0;
 }
 
+void Camera::updateAspect(double width, double height)
+{
+  aspectRatio_ = width / height;
+}
+
 void Camera::LookAtThis(GLdouble x, GLdouble y, GLdouble z)
 {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(90, 1, 0.01, 100);
+  gluPerspective(90, aspectRatio_, 0.01, 100);
 
   if (still == false)
     {

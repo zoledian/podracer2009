@@ -121,6 +121,13 @@ void display()
   glutSwapBuffers();
 }
 
+void reshape(int w, int h)
+{
+  glMatrixMode(GL_MODELVIEW);
+  glViewport (0, 0, w,  h);
+  Cam->updateAspect(w, h);
+
+}
 
 /*** 
  *** TIMER (frame limiter) FUNCTION
@@ -166,7 +173,7 @@ int main(int argc, char **argv)
   glutKeyboardFunc(inputNormKey);
   glutSpecialFunc(inputSpecKey);
   glutTimerFunc(20, timer, 0);
-
+  glutReshapeFunc(reshape);
 
   Cam = new Camera();
   Spaceship = new Ship(Cam);

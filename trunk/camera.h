@@ -12,10 +12,12 @@ class Camera {
   GLboolean turning;
   void reset();
   GLdouble* getLocation();
+  void updateAspect(double width, double height);
 
  private:
   GLdouble _location[3];
   GLdouble _speed;
+  double aspectRatio_;
 
 };
 
