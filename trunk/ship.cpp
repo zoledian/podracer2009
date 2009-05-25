@@ -42,8 +42,11 @@ Ship::Ship(Camera* cam)
                         // (100 -> 5.0 steps if vel = 0.050)
 
   // Particlesystem for engine
-  flame1_ = new ParticleSystem();
-  flame2_ = new ParticleSystem();
+  if (flame1_ == NULL || flame2_ == NULL)
+    {
+      flame1_ = new ParticleSystem();
+      flame2_ = new ParticleSystem();
+    }
   
   // Init camera
   camera_ = cam;
