@@ -100,9 +100,9 @@ void ParticleSystem::draw(int nr)
 	  float z=particles[i].z;
 	  	  
 	  // Draw The Particle Using Our RGB Values, Fade The Particle Based On It's Life
-	  glColor4f(particles[i].r - colorAdjust,
-		    particles[i].g - colorAdjust,
-		    particles[i].b - colorAdjust,
+	  glColor4f(particles[i].r,
+		    particles[i].g,
+		    particles[i].b,
 		    particles[i].life - colorAdjust);
 	  
 	  glBegin(GL_TRIANGLE_STRIP); // Build Quad From A Triangle Strip
@@ -149,9 +149,9 @@ void ParticleSystem::draw(int nr)
 	      while(particles[i].zi < 10)
 		particles[i].zi=float((rand()%10))*10.0f;
 
-	      particles[i].r=colors[col][0]; // Select Red From Color Table
-	      particles[i].g=colors[col][1]; // Select Green From Color Table
-	      particles[i].b=colors[col][2]; // Select Blue From Color Table
+	      particles[i].r=colors[col][0] - colorAdjust; // Select Red From Color Table
+	      particles[i].g=colors[col][1] - colorAdjust; // Select Green From Color Table
+	      particles[i].b=colors[col][2] - colorAdjust; // Select Blue From Color Table
 	    }
 	}
       
