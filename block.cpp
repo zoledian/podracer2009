@@ -78,10 +78,6 @@ void Block::draw()
  	  
           glColor3f(red_, green_, blue_); 
 
-	  //glEnable(GL_DEPTH_TEST);
-	  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen and z-buffer
-	  //glLoadIdentity(); // Reset current matrix (Modelview)
-     
 	  glPolygonMode(GL_FRONT,GL_FILL);
 
 	  // Translate to the right coordinates and rotate
@@ -91,87 +87,7 @@ void Block::draw()
 	  glScalef(1,0.2,1.0);
 
 	  glCallList(cubeList_);
-	  
-	  /*
-	  // Draw block
-	  // Front side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(0,0,-1);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(-0.5, 0.5, -0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(0.5, 0.5, -0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(0.5, -0.5, -0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(-0.5, -0.5, -0.5);
-	  glEnd();
-	  
-	  // Right side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(1,0,0);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(0.5, -0.5, 0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(0.5, -0.5, -0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(0.5, 0.5, -0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(0.5, 0.5, 0.5);
-	  glEnd(); 
-	  
-	  // Back side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(0,0,1);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(-0.5, -0.5, 0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(0.5, -0.5, 0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(0.5, 0.5, 0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(-0.5, 0.5, 0.5);
-	  glEnd();
-	  
-	  // Left side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(-1,0,0);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(-0.5, -0.5, -0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(-0.5, -0.5, 0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(-0.5, 0.5, 0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(-0.5, 0.5, -0.5);
-	  glEnd(); 
-	  
-	  // Top side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(0,1,0);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(-0.5, 0.5, -0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(-0.5, 0.5, 0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(0.5, 0.5, 0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(0.5, 0.5, -0.5);
-	  glEnd();
-	  
-	  // Bottom side
-	  glBegin(GL_POLYGON);
-	  glNormal3f(0,-1,0);
-	  glTexCoord2f(0, 0);
-	  glVertex3f(0.5, -0.5, -0.5);
-	  glTexCoord2f(1, 0);
-	  glVertex3f(0.5, -0.5, 0.5);
-	  glTexCoord2f(1, 1);
-	  glVertex3f(-0.5, -0.5, 0.5);
-	  glTexCoord2f(0, 1);
-	  glVertex3f(-0.5, -0.5, -0.5);
-	  glEnd();
-	  */
+ 
 
      }
      else if(type_ == 3) // Jump block
@@ -189,7 +105,6 @@ void Block::draw()
 	  glScalef(1,0.2,1.0);
 	  
 	  glCallList(cubeList_);
-	  //glutSolidCube(1);	
 
 	  glEnable(GL_LIGHTING); 
      }
@@ -202,7 +117,7 @@ void Block::draw()
 	  glTranslatef(coord_[0],coord_[1],coord_[2]);
 	  glRotatef(angle_,1,0,0);
 	  glCallList(cubeList_);
-	  
+
      }
 
 }
